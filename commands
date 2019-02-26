@@ -1,0 +1,7 @@
+ionic cordova build android --prod --release --aot --minifyjs --optimizejs --minifycss
+
+cd platforms/android/app/build/outputs/apk/release/
+
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ../../../../../../../pdrider.keystore app-release-unsigned.apk pdrider -tsa http://tsa.wotrus.com
+
+/home/jhon/Android/build-tools/25.0.2/zipalign -v 4 app-release-unsigned.apk app-rider.apk

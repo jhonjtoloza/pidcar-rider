@@ -1,0 +1,24 @@
+<ion-header>
+    <ion-navbar color="primary">
+        <ion-title>Video ayuda</ion-title>
+    </ion-navbar>
+</ion-header>
+<ion-content>
+  <ion-list>
+    <ion-item *ngFor="let ayuda of ayudas">
+      <ion-card>
+        <ion-card-header>
+          {{ayuda.titulo}}
+        </ion-card-header>
+        <div class="video-container">
+          <iframe [src]="('https://www.youtube.com/embed/'+ayuda.url_video)|safeurl" frameborder="0" width="100%"
+                  height="315"
+                  allowfullscreen></iframe>
+        </div>
+        <ion-card-content>
+          {{ayuda.descripcion}}
+        </ion-card-content>
+      </ion-card>
+    </ion-item>
+  </ion-list>
+</ion-content>

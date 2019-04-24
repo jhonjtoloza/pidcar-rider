@@ -3,9 +3,10 @@ import { AlertController, ModalController, NavController, NavParams, Platform } 
 import { DriverService } from '../../services/driver-service';
 import { HomePage } from "../home/home";
 import { TripService } from "../../services/trip-service";
-import { POSITION_INTERVAL, SOS, TRIP_STATUS_GOING } from "../../services/constants";
+import { SOS, TRIP_STATUS_GOING } from "../../services/constants";
 import { PlaceService } from "../../services/place-service";
 import { InAppBrowser } from "@ionic-native/in-app-browser/ngx";
+import { SettingService } from "../../services/setting-service";
 
 declare var google: any;
 
@@ -31,7 +32,8 @@ export class TrackingPage {
               public placeService: PlaceService,
               public modalCtrl: ModalController,
               public alertCtrl: AlertController,
-              public iab: InAppBrowser) {
+              public iab: InAppBrowser,
+              public settings: SettingService) {
     this.sos = SOS;
     this.isFinish = (this.navParams.get('show_card') === true);
   }
@@ -145,23 +147,12 @@ export class TrackingPage {
       position: latLng
     });
 
-    this.trackDriver();
+    this.showDriverOnMap();
   }
 
   // make array with range is n
   range(n) {
     return new Array(Math.round(n));
-  }
-
-  trackDriver() {
-    this.showDriverOnMap();
-
-    this.driverTracking = setInterval(() => {
-      this.marker.setMap(null);
-      this.showDriverOnMap();
-    }, POSITION_INTERVAL);
-
-    console.log(POSITION_INTERVAL);
   }
 
   cancelTrip() {
@@ -179,7 +170,7 @@ export class TrackingPage {
       this.placeService.getLocality(),
       this.driver.driver_category_id,
       this.driver.$key
-    ).take(1).subscribe(snapshot => {
+    ).subscribe(snapshot => {
       // create or update
       console.log("Posicion del conductor", snapshot);
       let latLng = new google.maps.LatLng(snapshot.lat, snapshot.lng);
@@ -190,11 +181,13 @@ export class TrackingPage {
       }
 
       // show vehicle to map
+      if (this.marker !== undefined)
+        this.marker.setMap(null);
       this.marker = new google.maps.Marker({
         map: this.map,
         position: latLng,
         icon: {
-          url: 'assets/img/map-suv.png',
+          url: this.settings.getCategoryIcon(this.driver.driver_category_id),
           size: new google.maps.Size(32, 32),
           origin: new google.maps.Point(0, 0),
           anchor: new google.maps.Point(16, 16),

@@ -107,7 +107,6 @@ export class TripService {
   }
 
   setAvailableDrivers(vehicles: any[]) {
-    console.log("set vehicles", vehicles.length);
     this.availableDrivers = vehicles;
   }
 

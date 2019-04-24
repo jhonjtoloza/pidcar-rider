@@ -22,7 +22,7 @@
             <button padding ion-button block (click)="login()">{{'LOGIN' | translate }}</button>
         </ion-item>
         <ion-item no-lines>
-            <button ion-button clear item-right [disabled]="email.length == 0" (click)="reset()">
+            <button ion-button clear (click)="reset()">
                 {{'FORGOT'|translate}}
             </button>
         </ion-item>

@@ -38,7 +38,7 @@
                 </button>
             </ion-item>
             <ion-item>
-                <ion-input disabled type="text" placeholder="A donde quieres ir?"
+                <ion-input disabled type="text" placeholder="A donde quieres ir?" (click)="chooseDestination()"
                            value="{{ destination ? destination.vicinity : '' }}"></ion-input>
                 <button ion-button item-right (click)="chooseDestination()">
                     <ion-icon name="search" class="search-icon"></ion-icon>

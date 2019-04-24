@@ -1,6 +1,6 @@
 export let SHOW_VEHICLES_WITHIN = 5; // within 5km
-export let POSITION_INTERVAL = 5000; // 2000ms
-export let VEHICLE_LAST_ACTIVE_LIMIT = 60000; // 60s
+export let POSITION_INTERVAL = 30000; // 20000ms
+export let VEHICLE_LAST_ACTIVE_LIMIT = 600000 * 3; // 10 minutos
 
 export let DEAL_STATUS_PENDING = 'PENDING';
 export let DEAL_STATUS_ACCEPTED = 'ACCEPTED';

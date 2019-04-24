@@ -34,12 +34,30 @@ export class LoginPage {
   }
 
   reset() {
-    if (this.email) {
-      firebase.auth().sendPasswordResetEmail(this.email)
-        .then(data =>
-          this.toast.create({message: 'Revisa tu email para recuperar tu contraseña', duration: 3000}).present())
-        .catch(err => this.toast.create({message: err.message, duration: 3000}).present())
-    }
+    let reset = this.alertCtrl.create({
+      title: 'Recuperar contraseña',
+      inputs: [
+        {
+          name: 'email',
+          label: 'Ingrese su email'
+        }
+      ],
+      buttons: [
+        {role: 'cancel', text: 'Cancelar'},
+        {role: 'ok', text: 'Confirmar'}
+      ]
+    });
+    reset.present();
+    reset.onDidDismiss(data => {
+      if (data.email.length)
+        firebase.auth().sendPasswordResetEmail(data.email)
+          .then(() =>
+            this.toast.create({message: 'Revisa tu email para recuperar tu contraseña', duration: 3000}).present())
+          .catch(err => this.toast.create({
+            message: "Correo no registrado o mal ingresado intente nuevamente",
+            duration: 3000
+          }).present())
+    });
   }
 
   login() {
@@ -49,11 +67,17 @@ export class LoginPage {
     else {
       let loading = this.loadingCtrl.create({content: 'Autenticando ...'});
       loading.present();
-
       this.authService.login(this.email, this.password).then(authData => {
-        loading.dismiss();
+        loading.setContent('Verificando cuenta en puntos darados');
         this.api.post('api/auth/login-by-token', {access_token: authData.uid}).then(value => {
+          loading.dismiss();
           this.authService.setPDUser(value)
+        }).catch(() => {
+          this.authService.logout();
+          loading.dismiss();
+          this.alertCtrl.create({
+            message: 'Su cuenta no pudo ser verificada en puntos dorados, contacte a atención al cliente'
+          })
         });
         this.nav.setRoot(HomePage);
       }, error => {

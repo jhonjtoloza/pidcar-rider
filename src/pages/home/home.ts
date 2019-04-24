@@ -26,6 +26,7 @@ import { AuthService } from "../../services/auth-service";
 import * as firebase from 'firebase';
 
 import { TranslateService } from '@ngx-translate/core';
+import { PushProvider } from "../../providers/push/push";
 
 declare var google: any;
 
@@ -73,8 +74,8 @@ export class HomePage {
               public loadingCtrl: LoadingController, public settingService: SettingService,
               public tripService: TripService, public driverService: DriverService, public afAuth: AngularFireAuth,
               public authService: AuthService, public translate: TranslateService,
-              public dealService: DealService) {
-    this.translate.setDefaultLang('en');
+              public dealService: DealService, private push: PushProvider) {
+    this.translate.setDefaultLang('es');
     this.origin = tripService.getOrigin();
     this.destination = tripService.getDestination();
 
@@ -88,7 +89,7 @@ export class HomePage {
 
   ionViewDidLoad() {
     this.showLoading();
-    this.tripService.getTrips().subscribe(trips => {
+    this.tripService.getTrips().take(1).subscribe(trips => {
       trips.forEach(trip => {
         console.log(trip.status);
         if (trip.status == TRIP_STATUS_WAITING || trip.status == DEAL_STATUS_ACCEPTED || trip.status == TRIP_STATUS_GOING) {
@@ -135,9 +136,8 @@ export class HomePage {
       if (this.origin) this.startLatLng = new google.maps.LatLng(this.origin.location.lat, this.origin.location.lng);
       else this.startLatLng = new google.maps.LatLng(resp.coords.latitude, resp.coords.longitude);
 
-      let directionsDisplay;
       let directionsService = new google.maps.DirectionsService();
-      directionsDisplay = new google.maps.DirectionsRenderer();
+      let directionsDisplay = new google.maps.DirectionsRenderer();
 
       this.map = new google.maps.Map(document.getElementById(this.mapId), {
         zoom: 15,
@@ -147,7 +147,6 @@ export class HomePage {
         zoomControl: false,
         streetViewControl: false,
       });
-
 
       let mapx = this.map;
       directionsDisplay.setMap(mapx);
@@ -163,13 +162,11 @@ export class HomePage {
           }
 
           let locality = this.placeService.setLocalityFromGeocoder(results);
-          console.log('locality', locality);
           this.tripService.setCurrency(this.currency);
 
-          if (this.destination) {
+          if (this.destination && this.destination.location.lat != null) {
             this.placeService.getDirection(this.origin.location.lat, this.origin.location.lng, this.destination.location.lat,
               this.destination.location.lng).subscribe((result: any) => {
-              console.log(result);
               if (result.routes.length) {
                 this.distance = result.routes[0].legs[0].distance.value;
                 this.distanceText = result.routes[0].legs[0].distance.text;
@@ -187,37 +184,35 @@ export class HomePage {
           this.currentVehicle = this.vehicles[0];
 
           this.locality = locality;
-          if (this.isTrackDriverEnabled)
-            this.trackDrivers();
+          this.trackDrivers();
         }
       });
 
       if (this.destination) {
-        this.destLatLng = new google.maps.LatLng(this.destination.location.lat, this.destination.location.lng);
-        let bounds = new google.maps.LatLngBounds();
-        bounds.extend(this.startLatLng);
-        bounds.extend(this.destLatLng);
+        if (this.destination.location.lat != null) {
+          this.destLatLng = new google.maps.LatLng(this.destination.location.lat, this.destination.location.lng);
+          let bounds = new google.maps.LatLngBounds();
+          bounds.extend(this.startLatLng);
+          bounds.extend(this.destLatLng);
 
-        mapx.fitBounds(bounds);
-        let request = {
-          origin: this.startLatLng,
-          destination: this.destLatLng,
-          travelMode: google.maps.TravelMode.DRIVING
-        };
-        directionsService.route(request, function (response, status) {
-          if (status == google.maps.DirectionsStatus.OK) {
-            console.log(response);
-            directionsDisplay.setDirections(response);
-            directionsDisplay.setMap(mapx);
-          } else {
-            console.log("error");
-          }
-        });
+          mapx.fitBounds(bounds);
+          let request = {
+            origin: this.startLatLng,
+            destination: this.destLatLng,
+            travelMode: google.maps.TravelMode.DRIVING
+          };
+          directionsService.route(request, function (response, status) {
+            if (status == google.maps.DirectionsStatus.OK) {
+              directionsDisplay.setDirections(response);
+              directionsDisplay.setMap(mapx);
+            }
+          });
+        }
       }
       this.hideLoading();
-    }).catch((error) => {
+    }).catch(() => {
       this.hideLoading();
-      console.log('Error getting location', error);
+
     });
   }
 
@@ -234,29 +229,23 @@ export class HomePage {
       buttons: [
         {
           text: 'Cancel',
-          handler: () => {
-            console.log('Cancel clicked');
-          }
+          role: 'cancel'
         },
         {
           text: 'Apply',
           handler: data => {
-            console.log(data.promocode);
             firebase.database().ref('promocodes').orderByChild("code").equalTo(data.promocode).once('value', promocodes => {
-              console.log(promocodes.val());
               let tmp: any = [];
               promocodes.forEach(promo => {
                 tmp.push({key: promo.key, ...promo.val()});
                 return false;
               });
               tmp = tmp[0];
-              console.log(tmp);
               if (promocodes.val() != null || promocodes.val() != undefined) {
                 this.promocode = tmp.code;
                 this.discount = tmp.discount;
                 this.tripService.setPromo(tmp.code);
                 this.tripService.setDiscount(tmp.discount);
-                console.log('promo applied', tmp.code, tmp.discount);
               }
             }, err => console.log(err));
           }
@@ -280,16 +269,13 @@ export class HomePage {
       buttons: [
         {
           text: 'Cancelar',
-          handler: () => {
-            console.log('Cancel clicked');
-          }
+          role: 'cancel'
         },
         {
           text: 'Guardar',
           handler: data => {
-            this.note = data;
-            this.tripService.setNote(data);
-            console.log('Saved clicked');
+            this.note = data.note
+            this.tripService.setNote(data.note);
           }
         }
       ]
@@ -300,42 +286,34 @@ export class HomePage {
   book() {
     this.locateDriver = true;
     console.log("consuctores en book: ", this.activeDrivers.length);
-    console.log(this.activeDrivers);
-
-    this.tripService.setAvailableDrivers(this.activeDrivers.slice(0));
+    console.log(this.activeDrivers, this.activeDrivers.slice(0));
     this.tripService.setDistance(this.distance);
     this.tripService.setIcon(this.currentVehicle.icon);
     this.tripService.setNote(this.note);
     this.tripService.setPromo(this.promocode);
     this.tripService.setDiscount(this.discount);
-    this.drivers = this.tripService.getAvailableDrivers();
-
-    console.log("drivers after: ", this.drivers.length);
-    console.log(this.drivers);
-
-    this.drivers = this.dealService.sortDriversList(this.drivers.slice(0));
-    console.log("driver after sort", this.drivers.length);
+    this.drivers = this.dealService.sortDriversList(this.activeDrivers);
     console.log(this.drivers);
     if (this.drivers.length) {
       this.makeDeal(0);
     } else {
       console.log("lenght = 0");
+      this.locateDriver = false;
+      this.alertCtrl.create({
+        subTitle: 'Lo sentimos no encontramos conductores disponibles.',
+        buttons: ['OK']
+      }).present();
     }
-
   }
 
   makeDeal(index) {
+    console.log("makedeal", index, this.drivers);
     let driver = this.drivers[index];
-    console.log(this.drivers);
-    console.log("driver in makedeal", driver);
     if (driver) {
-      console.log("Ingreso en el if");
       driver.status = 'Bidding';
       this.dealService.getDriverDeal(driver.$key).take(1).subscribe(snapshot => {
         if (snapshot.$value === null) {
           // create a record
-          console.log(snapshot);
-          console.log("Valor de descuento", this.tripService.getDiscount());
           this.dealService.makeDeal(
             driver.$key,
             this.tripService.getOrigin(),
@@ -346,17 +324,18 @@ export class HomePage {
             this.tripService.getPromo(),
             this.tripService.getDiscount(),
           ).then(() => {
+            this.push.sendNotification('Solicitud de taxi, click para ver los detalles', 'Taxi !!!', driver.app_token);
             let sub = this.dealService.getDriverDeal(driver.$key).subscribe(snap => {
-              // if record doesn't exist or is accepted
+              // if deal expired
               if (snap.$value === null || snap.status != DEAL_STATUS_PENDING) {
                 sub.unsubscribe();
 
                 // if deal has been cancelled
                 if (snap.$value === null) {
                   this.nextDriver(index);
+                  console.log("sext driver");
                 } else if (snap.status == DEAL_STATUS_ACCEPTED) {
                   // if deal is accepted
-                  console.log('accepted', snap.tripId);
                   this.drivers = [];
                   this.tripService.setId(snap.tripId);
                   this.nav.setRoot(TrackingPage);
@@ -364,7 +343,6 @@ export class HomePage {
               }
             });
           }).catch(err => {
-            console.log("error haciendo makedeal", err);
           });
         } else {
           this.nextDriver(index);
@@ -372,7 +350,6 @@ export class HomePage {
       });
     } else {
       // show error & try again button
-      console.log('No user found');
       this.locateDriver = false;
       this.alertCtrl.create({
         subTitle: 'Lo sentimos no encontramos conductores disponibles.',
@@ -382,6 +359,7 @@ export class HomePage {
   }
 
   nextDriver(index) {
+    console.log("next call");
     this.drivers.splice(index, 1);
     this.makeDeal(index);
   }
@@ -391,7 +369,53 @@ export class HomePage {
   }
 
   chooseDestination() {
-    this.nav.push(PlacesPage, {type: 'destination'});
+    let alert = this.alertCtrl.create({
+      title: 'Elegir direccion',
+      subTitle: `Si no conoce como elegir la ubicación en el mapa o no es un sitio conocido,
+      elija escribir dirección manualmente`,
+      buttons: [
+        {
+          role: 'cancel',
+          text: 'Cancelar'
+        },
+        {
+          text: 'Escribir dirección manualmente',
+          handler: () => {
+            let text = this.alertCtrl.create({
+              title: 'Escribir direccion',
+              inputs: [
+                {
+                  name: 'vicinity',
+                  placeholder: 'Escriba su dirección de destino',
+                  type: 'textarea'
+                }
+              ],
+              buttons: [
+                {
+                  text: 'Cancelar',
+                  role: 'cancel'
+                },
+                {
+                  text: 'Aceptar',
+                  handler: (data) => {
+                    this.tripService.setDestination(data.vicinity, null, null);
+                    this.destination = this.tripService.getDestination();
+                  }
+                }
+              ]
+            });
+            text.present();
+          }
+        },
+        {
+          text: 'Buscar ubicación',
+          handler: () => {
+            this.nav.push(PlacesPage, {type: 'destination'});
+          }
+        }
+      ]
+    });
+    alert.present();
   }
 
   setOrigin() {
@@ -402,7 +426,7 @@ export class HomePage {
       position: latLng
     });
     startMarker.setMap(this.map);
-    if (this.destination)
+    if (this.destination && this.destination.location.lat != null)
       startMarker.setMap(null);
     this.map.setCenter(latLng);
   }
@@ -425,13 +449,9 @@ export class HomePage {
 
   trackDrivers() {
     this.showDriverOnMap(this.locality);
-    clearInterval(this.driverTracking);
-
     this.driverTracking = setInterval(() => {
       this.showDriverOnMap(this.locality);
     }, POSITION_INTERVAL);
-
-    console.log(POSITION_INTERVAL);
   }
 
   showDriverOnMap(locality) {
@@ -459,14 +479,12 @@ export class HomePage {
             vehicle.distance = distance;
             this.driverMarkers.push(marker);
             this.activeDrivers.push(vehicle);
-            console.log("Vehiculo agregado:", this.activeDrivers.length);
           }
         });
       });
   }
 
   clearDrivers() {
-    console.log("se limpian conductores");
     this.activeDrivers = [];
     this.driverMarkers.forEach((vehicle) => {
       vehicle.setMap(null);

@@ -38,6 +38,7 @@ import { ApiService } from "../services/api.service";
 import { AyudaPage } from "../pages/ayuda/ayuda";
 import { PipesModule } from "../pipes/pipes.module";
 import { InAppBrowser } from "@ionic-native/in-app-browser/ngx";
+import { PushProvider } from '../providers/push/push';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/lang/', '.json');
@@ -111,7 +112,8 @@ export const firebaseConfig = {
     AuthService,
     ApiService,
     InAppBrowser,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    PushProvider
   ]
 })
 export class AppModule {

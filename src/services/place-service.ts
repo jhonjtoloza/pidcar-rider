@@ -61,8 +61,7 @@ export class PlaceService {
    */
   formatAddress(address) {
     console.log(address);
-    let components = address.address_components;
-    let vicinity = components[0].short_name + ', ' + components[1].short_name;
+    let vicinity = address.formatted_address;
 
     return {
       location: {

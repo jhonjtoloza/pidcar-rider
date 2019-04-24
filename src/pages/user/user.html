@@ -66,9 +66,9 @@
                             <p>ID: {{ trip.createdAt }}</p>
                         </ion-col>
                         <ion-col>
-                            <h1 style="color: #8BC34A; font-weight: 600;">{{trip.currency}} {{ trip.trip.price|number
+                            <h1 style="color: #8BC34A; font-weight: 600;">{{trip.currency}} {{ trip?.trip?.price|number
                                 }}</h1>
-                            <p>Puntos ganados: {{trip.trip.points_generated}}</p>
+                            <p>Puntos ganados: {{trip?.trip?.points_generated}}</p>
                             <!--<p>Promo: {{ trip.promo}}</p>-->
                             <!--<p>descuento: {{trip.discount}}</p>-->
                         </ion-col>

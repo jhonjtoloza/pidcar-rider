@@ -29,5 +29,11 @@ export class SettingService {
     });
   }
 
+  getCategoryIcon(category_id){
+    for (let category of this.driverCategories) {
+      if (category.id == category_id)
+        return category.icon_map;
+    }
+  }
 
 }

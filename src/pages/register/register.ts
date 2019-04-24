@@ -81,6 +81,6 @@ export class RegisterPage {
   }
 
   launch() {
-    this.iab.create('http://puntosdorados/site/terminos?page=app-rider', '_system');
+    this.iab.create('http://puntosdorados.com/site/terminos?page=app-rider', '_system');
   }
 }

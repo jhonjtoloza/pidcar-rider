@@ -1,0 +1,44 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>Historial</ion-title>
+    <ion-buttons end>
+      <button class="disable-hover" (click)="nav.pop()" ion-button block clear>
+        <ion-icon name="car"></ion-icon> &nbsp;
+        Inicio
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <ion-card *ngFor="let trip of trips">
+    <ion-card-content>
+      <ion-row>
+        <ion-col>
+          <p>ID: {{ trip.createdAt }}</p>
+        </ion-col>
+        <ion-col>
+          <h1 style="color: #8BC34A; font-weight: 600;">$ {{ trip?.trip?.price|number
+            }}</h1>
+          <p>Puntos ganados: {{trip?.trip?.points_generated}}</p>
+          <!--<p>Promo: {{ trip.promo}}</p>-->
+          <!--<p>descuento: {{trip.discount}}</p>-->
+        </ion-col>
+      </ion-row>
+      <ion-item>
+        <h2>Desde ({{ trip.pickedUpAt | date: 'medium'}})</h2>
+        <p>{{ trip.origin.vicinity }}</p>
+      </ion-item>
+      <ion-item>
+        <h2>Hacia ({{ trip.droppedOffAt | date: 'medium'}})</h2>
+        <p>{{ trip.destination.vicinity }}</p>
+      </ion-item>
+      <ion-item>
+        <h2>Tu Comentario</h2>
+        <p>{{trip.comment}}</p>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+  <ion-card *ngIf="!trips.length">
+    <ion-card-content>Sin servicios prestados</ion-card-content>
+  </ion-card>
+</ion-content>

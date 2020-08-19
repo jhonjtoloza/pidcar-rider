@@ -1,0 +1,45 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>PuntosDorados</ion-title>
+    <ion-buttons end>
+      <button class="disable-hover" (click)="nav.pop()" ion-button block clear>
+        <ion-icon name="car"></ion-icon> &nbsp;
+        Inicio
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+<ion-content padding>
+  <ion-card>
+    <ion-card-header>
+      <h2>Donde gastar tus puntos.</h2>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item>
+        <h2>amigo pasajero sus puntos ganados tienen las siguientes características:</h2>
+      </ion-item>
+      <ion-item>
+        <p>1. Sus puntos no se vencen.</p>
+      </ion-item>
+      <ion-item>
+        <p>2. Puede ganar puntos tomando taxi o en cientos de diferentes empresas por todo el país.</p>
+      </ion-item>
+      <ion-item>
+        <p>3. Puede ganar puntos invitando sus amigos a unirse las aplicaciones “PidCar” o “PUNTOS DORADOS”.</p>
+      </ion-item>
+      <ion-item>
+        <p>4. Redima/Gaste sus puntos en cientos de empresas por todo el país (restaurantes, panaderías, droguerías,
+          salas de belleza, etc).</p>
+      </ion-item>
+      <ion-item>
+        <p>5. Pulse seguidamente en el botón descargar puntos dorados e ingrese con su mismo correo electrónico con que
+          ingreso a “PidCar” y su misma contraseña (ya que usted ya está registrado automáticamente en ambas
+          aplicaciones)
+          y seleccione donde comprar y pagar con sus puntos</p>
+      </ion-item>
+      <ion-item>
+        <button ion-button block class="btn-terminos" (click)="openApp()">Descargar Puntos Dorados</button>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

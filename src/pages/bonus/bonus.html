@@ -1,0 +1,48 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>Historial</ion-title>
+    <ion-buttons end>
+      <button class="disable-hover" (click)="nav.pop()" ion-button block clear>
+        <ion-icon name="car"></ion-icon> &nbsp;
+        Inicio
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+<ion-content padding>
+  <ion-card>
+    <ion-card-header>
+      <h2>Información Importante.</h2>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item>
+        <h2>Codigo para invitar amigos</h2>
+        <p>{{index.code}}</p>
+        <small>pide a tus amigos que se registren con tu codigo para que tu ganes puntos por sus compras.</small>
+      </ion-item>
+      <ion-item>
+        <h2>Numero de invitados</h2>
+        <p>{{index.numeroAfiliados}}</p>
+        <small>Ganas puntos cuando ellos compren, que esperas invita a mas amigos.</small>
+      </ion-item>
+      <ion-item>
+        <h2>Puntos en tu cuenta</h2>
+        <p>{{index.puntos}}</p>
+        <small>Compra en nuestras empresas, acumula puntos y compra con tus puntos</small>
+      </ion-item>
+      <ion-item>
+        <h2>Puntos ganados por invitados</h2>
+        <p>{{index.afiliados}}</p>
+        <small>Estos puntos te los entregamos el 1 de cada mes.</small>
+      </ion-item>
+      <ion-item>
+        <h2>Puntos que te regalamos.</h2>
+        <p class="big-red">{{index.referidos}}</p>
+        <small>Cada dia repartimos puntos gratis a quienes mas amigos amigos inviten.</small>
+        <button ion-button clear block class="btn-terminos" (click)="openTerminos()">Terminos y condiciones de la
+          oferta
+        </button>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

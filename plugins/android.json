@@ -1,0 +1,58 @@
+{
+  "prepare_queue": {
+    "installed": [],
+    "uninstalled": []
+  },
+  "config_munge": {
+    "files": {}
+  },
+  "installed_plugins": {
+    "cordova-plugin-device": {
+      "PACKAGE_NAME": "com.pd.rider"
+    },
+    "cordova-plugin-facebook4": {
+      "APP_ID": "349388219178452",
+      "APP_NAME": "PD Taxi",
+      "FACEBOOK_HYBRID_APP_EVENTS": "false",
+      "FACEBOOK_ANDROID_SDK_VERSION": "4.40.0",
+      "PACKAGE_NAME": "com.pd.rider"
+    },
+    "cordova-plugin-geolocation": {
+      "PACKAGE_NAME": "com.pd.rider"
+    },
+    "cordova-plugin-splashscreen": {
+      "PACKAGE_NAME": "com.pd.rider"
+    },
+    "cordova-plugin-statusbar": {
+      "PACKAGE_NAME": "com.pd.rider"
+    },
+    "cordova-plugin-whitelist": {
+      "PACKAGE_NAME": "com.pd.rider"
+    },
+    "ionic-plugin-keyboard": {
+      "PACKAGE_NAME": "com.pd.rider"
+    },
+    "onesignal-cordova-plugin": {
+      "PACKAGE_NAME": "com.pd.rider"
+    },
+    "cordova-plugin-request-location-accuracy": {
+      "PLAY_SERVICES_LOCATION_VERSION": "16.+",
+      "PACKAGE_NAME": "com.pd.rider"
+    },
+    "cordova-plugin-market": {
+      "PACKAGE_NAME": "com.pd.rider"
+    },
+    "cordova-plugin-inappbrowser": {
+      "PACKAGE_NAME": "com.pd.rider"
+    },
+    "cordova-plugin-x-socialsharing": {
+      "ANDROID_SUPPORT_V4_VERSION": "24.1.1+",
+      "PACKAGE_NAME": "com.pd.rider"
+    }
+  },
+  "dependent_plugins": {
+    "es6-promise-plugin": {
+      "PACKAGE_NAME": "com.pd.rider"
+    }
+  }
+}

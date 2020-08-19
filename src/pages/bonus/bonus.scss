@@ -1,0 +1,62 @@
+page-bonus {
+  img {
+    width: 100%;
+  }
+
+  .card-ios {
+    margin: 0 0 10px;
+    width: 100%;
+    font-size: 1.4rem;
+    background: #ffffff;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  }
+
+  .card-title-ios {
+    text-align: center;
+    font-size: 1.5rem;
+    color: #686868;
+  }
+
+  .card-content-ios {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .card-header-ios + .card-content-ios, .card-ios .item + .card-content-ios {
+    padding-top: 0;
+    padding-bottom: 16px;
+  }
+
+  .item-ios p {
+    color: #593011;
+    text-align: center;
+    font-size: 18px;
+    border-bottom: 1px solid #E2A100;
+    width: 100%;
+  }
+
+  small {
+    color: rgba(167, 98, 26, 0.62);
+    text-align: justify;
+    white-space: normal;
+  }
+
+  .item-ios h2 {
+    color: #593011;
+    font-size: 20px;
+    padding-bottom: 5px;
+  }
+
+  .btn-terminos {
+    font-weight: bold;
+    color: #ad2727;
+    white-space: normal !important;
+  }
+
+  .big-red {
+    color: #ad2727 !important;
+    font-weight: bold !important;
+    font-size: 24px !important;
+    padding: 8px;
+  }
+}

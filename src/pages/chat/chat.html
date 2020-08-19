@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>Historial</ion-title>
+    <ion-buttons end>
+      <button class="disable-hover" (click)="nav.pop()" ion-button block clear>
+        <ion-icon name="car"></ion-icon> &nbsp;
+        Inicio
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+<ion-content padding #content>
+  <ion-list>
+    <ion-item *ngFor="let chat of soporte.chats">
+      <ion-avatar item-start>
+        <img [src]="chat.user.foto" useImg="true"/>
+      </ion-avatar>
+      <h2>{{chat.user.nombres}}</h2>
+      <p>{{chat.message}}</p>
+    </ion-item>
+  </ion-list>
+</ion-content>
+<ion-footer ion-fixed class="bar-chat">
+  <ion-toolbar class="no-border" color="white">
+    <ion-input [(ngModel)]="mensaje" placeholder="mensaje ..."></ion-input>
+    <ion-buttons end>
+      <button ion-button (click)="sendMensaje()">
+        <ion-icon name="send" color="primary"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

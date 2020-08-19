@@ -1,0 +1,43 @@
+<ion-header>
+    <ion-navbar color="primary">
+        <ion-title>Conductores</ion-title>
+    </ion-navbar>
+</ion-header>
+<ion-content>
+    <ion-card *ngFor="let driver of drivers;">
+        <ion-list>
+            <ion-item>
+                <ion-avatar item-start>
+                    <img [src]="driver.photo">
+                </ion-avatar>
+                <ion-label>
+                    <div class="right-info">
+                        <h4>{{driver.oferta|currency}}</h4>
+                        <p>{{driver.distance|distance}}</p>
+                        <p>{{driver.duration}}</p>
+                    </div>
+                    <h2>{{driver.name}}</h2>
+                    <p>{{driver.vehiculo.marca}} / {{driver.vehiculo.placa}}</p>
+                    <p>{{driver.rating}}
+                        <ion-icon name="star-outline"></ion-icon>
+                    </p>
+                </ion-label>
+            </ion-item>
+            <ion-item *ngIf="driver.accepted || driver.changed" class="buttons">
+                <ion-row>
+                    <ion-col>
+                        <button ion-button color="danger" outline block round small (click)="declinar(driver)">Declinar</button>
+                    </ion-col>
+                    <ion-col>
+                        <button ion-button color="success" block round small (click)="accept(driver)">Aceptar</button>
+                    </ion-col>
+                </ion-row>
+            </ion-item>
+        </ion-list>
+    </ion-card>
+</ion-content>
+<ion-footer>
+    <ion-navbar>
+        <button ion-button small block round color="danger" (click)="cancelar()">Cancelar</button>
+    </ion-navbar>
+</ion-footer>

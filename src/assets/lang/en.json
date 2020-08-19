@@ -36,5 +36,6 @@
   "SOS": "SOS",
   "ON_THE_WAY": "Driver on the way",
   "SHOW_RATE_CARD": "Show Rate Card",
-  "DOCUMENT": "Document"
+  "DOCUMENT": "Document",
+  "NOT_DISPONIBLE": "No hay servicio disponibles en su zona"
 }

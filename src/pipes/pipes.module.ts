@@ -1,9 +1,13 @@
-import { NgModule } from '@angular/core';
-import { SafeurlPipe } from './safeurl/safeurl';
+import {NgModule} from '@angular/core';
+import {SafeurlPipe} from './safeurl/safeurl';
+import {DistancePipe} from './distance/distance';
+
 @NgModule({
-	declarations: [SafeurlPipe],
-	imports: [],
-	exports: [SafeurlPipe]
+  declarations: [SafeurlPipe,
+    DistancePipe],
+  imports: [],
+  exports: [SafeurlPipe,
+    DistancePipe]
 })
 export class PipesModule {
   static forRoot() {

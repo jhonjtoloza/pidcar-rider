@@ -1,26 +1,27 @@
-import { Injectable } from "@angular/core";
-import { AngularFireDatabase } from "angularfire2/database/database";
-import { Place } from "./place";
-import { AuthService } from "./auth-service";
-import { TRIP_STATUS_CANCELED } from "./constants";
+import {Injectable} from "@angular/core";
+import {AngularFireDatabase} from "angularfire2/database/database";
+import {Place} from "../model/place";
+import {AuthService} from "./auth-service";
+import {TRIP_STATUS_CANCELED} from "./constants";
 
 @Injectable()
 export class TripService {
+
   private id: any;
   private trips: any;
-  private currency: string;
   private origin: any;
   private destination: any;
-  private distance: number;
+  private distance: { tex: string, value: number };
+  private duration: { tex: string, value: number };
   private note: string;
   private vehicle: any;
-  private promocode: any = '';
-  private discount: any = 0;
+  private typeViaje: "Taximetro"; // Taximetro | Oferta
   // vehicle's icon
   private icon: any;
-  private availableDrivers: any[] = [];
+  private oferta: any = 0;
 
-  constructor(public db: AngularFireDatabase, public authService: AuthService) {
+  constructor(public db: AngularFireDatabase,
+              public authService: AuthService) {
 
   }
 
@@ -34,14 +35,6 @@ export class TripService {
 
   getId() {
     return this.id;
-  }
-
-  setCurrency(currency) {
-    return this.currency = currency;
-  }
-
-  getCurrency() {
-    return this.currency;
   }
 
   setOrigin(vicinity, lat, lng) {
@@ -66,8 +59,12 @@ export class TripService {
     return this.distance = distance;
   }
 
-  getDistance() {
+  getDistance(): { tex: string, value: number } {
     return this.distance;
+  }
+
+  getDuration(): { tex: string, value: number } {
+    return this.duration
   }
 
   setNote(note) {
@@ -76,22 +73,6 @@ export class TripService {
 
   getNote() {
     return this.note;
-  }
-
-  setPromo(promocode) {
-    return this.promocode = promocode;
-  }
-
-  getPromo() {
-    return this.promocode;
-  }
-
-  setDiscount(discount) {
-    return this.discount = discount;
-  }
-
-  getDiscount() {
-    return this.discount;
   }
 
   setVehicle(vehicle) {
@@ -106,14 +87,6 @@ export class TripService {
     return this.icon;
   }
 
-  setAvailableDrivers(vehicles: any[]) {
-    this.availableDrivers = vehicles;
-  }
-
-  getAvailableDrivers(): any[] {
-    return this.availableDrivers;
-  }
-
   getTrip(id) {
     return this.db.object('trips/' + id);
   }
@@ -123,8 +96,8 @@ export class TripService {
     return this.db.list('trips', {
       query: {
         orderByChild: 'passengerId',
-        equalTo: user.uid
-      }
+        equalTo: user.uid,
+      },
     });
   }
 
@@ -132,9 +105,43 @@ export class TripService {
     return this.db.object('trips/' + id).update({status: TRIP_STATUS_CANCELED})
   }
 
-  rateTrip(tripId, stars) {
+  rateTrip(tripId, data) {
     return this.db.object('trips/' + tripId).update({
-      rating: parseInt(stars)
+      rating: parseInt(data.rating),
+      comment: data.comment
     });
+  }
+
+  cancel(tripId) {
+    this.db.object('trips/' + tripId).update({
+      droppedOffAt: Date.now(),
+      status: TRIP_STATUS_CANCELED
+    }).then().catch()
+  }
+
+  confirmPagoPuntos(tripId) {
+    this.db.object(`trips/${tripId}`).update({
+      solictud_pago_puntos: true
+    }).then().catch()
+  }
+
+  setDuration(duration: any) {
+    this.duration = duration;
+  }
+
+  setTypeViaje(typeViaje: any) {
+    this.typeViaje = typeViaje;
+  }
+
+  getTypeViaje() {
+    return this.typeViaje
+  }
+
+  setOferta(price) {
+    this.oferta = price;
+  }
+
+  getOferta() {
+    return this.oferta;
   }
 }

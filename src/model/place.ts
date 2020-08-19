@@ -9,7 +9,6 @@ export class Place {
     this.vicinity = vicinity;
   }
 
-  // get place object with formatted data
   getFormatted() {
     return {
       location: {

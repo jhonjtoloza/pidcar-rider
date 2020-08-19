@@ -1,6 +1,6 @@
-import { LoadingController, ToastController } from 'ionic-angular';
-import { Component } from '@angular/core';
-import { ApiService } from "../../services/api.service";
+import {LoadingController, NavController, ToastController} from 'ionic-angular';
+import {Component} from '@angular/core';
+import {ApiService} from "../../services/api.service";
 
 @Component({
   selector: 'page-ayuda',
@@ -13,7 +13,8 @@ export class AyudaPage {
   constructor(
     public api: ApiService,
     public load: LoadingController,
-    public toast: ToastController) {
+    public toast: ToastController,
+    public nav: NavController) {
   }
 
   ionViewDidLoad() {

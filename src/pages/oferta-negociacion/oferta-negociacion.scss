@@ -1,0 +1,22 @@
+page-oferta-negociacion {
+  .right-info{
+    float: right;
+    text-align: right;
+
+    h4{
+      font-size: 20px;
+      color: green;
+    }
+  }
+  .item-ios ion-avatar img {
+    border-radius: 50%;
+    overflow: hidden;
+    width: 50px;
+    height: 50px;
+  }
+  .buttons{
+    .label-ios{
+      margin: 0;
+    }
+  }
+}

@@ -38,5 +38,6 @@
   "SHOW_RATE_CARD": "Mostrar tarjeta de tarifa",
   "DOCUMENT": "Documento",
   "CODEREF": "Codigo de referido",
-  "CODETAXI": "Código de quien te recomendó"
+  "CODETAXI": "Código de quien te recomendó",
+  "NOT_DISPONIBLE": "No hay servicio disponibles en su zona"
 }

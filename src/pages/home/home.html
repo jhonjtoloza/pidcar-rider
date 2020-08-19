@@ -1,28 +1,24 @@
 <ion-content>
+    <ion-fab left top #fab>
+        <button ion-fab class="button button-ios button-default button-default-ios">
+            <ion-icon name="menu"></ion-icon>
+        </button>
+        <ion-fab-list side="bottom">
+            <ion-list>
+                <ion-item *ngFor="let item of menuList" (click)="goPage(item)">
+                    <ion-icon [name]="item.icon" item-start></ion-icon>
+                    <span>{{item.label}}</span>
+                </ion-item>
+            </ion-list>
+        </ion-fab-list>
+    </ion-fab>
     <div id="{{ mapId }}" [ngStyle]="{height: '85%'}"></div>
-    <!-- <ion-list>
-        <ion-item>
-          <ion-label>{{'FROM' | translate}}</ion-label>
-          <ion-input type="text"></ion-input>
-          <button ion-button item-right>Pick</button>
-        </ion-item>
-      </ion-list> -->
-    <!--Choose origin and destination places-->
-    <div class="map-overlay">
-        <div style="top:0; right: 0; padding: 4px;">
-            <button ion-button (click)="goProfilePage()">
-                <ion-icon name="contact"></ion-icon>
-            </button>
-        </div>
-
-    </div>
-
     <div class="align-bottom">
         <ion-grid class="common-bg" [hidden]="!destination">
             <ion-row>
                 <!--<ion-col (click)="//showPromoPopup()" *ngIf="destination">-->
-                    <!--<ion-icon name="ios-create-outline" color="gray"></ion-icon>-->
-                    <!--<span ion-text color="gray">{{'PROMO' | translate}}</span>-->
+                <!--<ion-icon name="ios-create-outline" color="gray"></ion-icon>-->
+                <!--<span ion-text color="gray">{{'PROMO' | translate}}</span>-->
                 <!--</ion-col>-->
                 <ion-col (click)="showNotePopup()">
                     <ion-icon name="ios-create-outline" color="gray"></ion-icon>
@@ -44,28 +40,50 @@
                     <ion-icon name="search" class="search-icon"></ion-icon>
                 </button>
             </ion-item>
+            <ion-item [hidden]="origin == undefined && destination == undefined">
+                <ion-select #selectTypeViaje (ionChange)="setTypeViaje($event)"
+                            [(ngModel)]="typeViaje"
+                            [selectOptions]="selectOptions" interface="action-sheet" placeholder="Por favor solicito."
+                            cancelText="Cancelar" okText="OK">
+                    <ion-option value="Taximetro" selected>
+                        Taximetro
+                    </ion-option>
+                    <ion-option value="Oferta">
+                        Quiero ofertar
+                    </ion-option>
+                </ion-select>
+                <button ion-button item-right (click)="selectTypeViaje._click($event)">
+                    <ion-icon name="arrow-down-outline" class="search-icon"></ion-icon>
+                </button>
+            </ion-item>
+            <ion-item *ngIf="typeViaje == 'Taximetro' && (destination != undefined && destination.location.lat != undefined)" class="bg-primary">
+                <p style="margin: 0; color: #c10f0f">Valor aproximado con taximetro: {{priceTaximetro|currency}}</p>
+                <small>Señor pasajero se le informa que este es un valor aproximado y puede variar dependiendo de
+                    factores como obstaculos en la via u horas pico</small>
+            </ion-item>
+            <ion-item *ngIf="typeViaje == 'Oferta'" class="bg-primary">
+                <ion-label>Ofrezco: </ion-label>
+                <ion-label item-end>{{tripService.getOferta()|currency}}</ion-label>
+            </ion-item>
         </ion-list>
-        <ion-row>
-            <ion-col *ngIf="distanceText!=''">
-                <ion-icon name="plane"></ion-icon>
-                <b>{{ distanceText }}</b></ion-col>
-            <ion-col *ngIf="durationText!=''">
-                <ion-icon name="time"></ion-icon>
-                <b>{{durationText}}</b></ion-col>
-        </ion-row>
-        <ion-row [hidden]="!destination">
-            <ion-col *ngFor="let vehicle of vehicles; let i = index" [ngClass]="{'active': vehicle.active}"
-                     (click)="chooseVehicle(i)">
-                <img src="{{ vehicle.icon }}">
-                <p>{{ vehicle.name }}</p>
-            </ion-col>
-        </ion-row>
-        <button ion-button block color="primary" [hidden]="destination" (click)="chooseDestination()">{{'RIDE_NOW' |
-            translate}}
+        <!--        <ion-row>-->
+        <!--            <ion-col *ngFor="let vehicle of vehicles; let i = index" [ngClass]="{'active': vehicle.active}"-->
+        <!--                     (click)="chooseVehicle(i)">-->
+        <!--                <img src="{{ vehicle.icon }}">-->
+        <!--                <p>{{ vehicle.name }}</p>-->
+        <!--            </ion-col>-->
+        <!--        </ion-row>-->
+        <button ion-button block color="primary" [hidden]="destination" [disabled]="!drivers.length"
+                (click)="chooseDestination()">
+            {{drivers.length ? 'Pedir servicio' : 'Servicio no disponible'}}
         </button>
-        <button ion-button block color="primary" [hidden]="!destination" (click)="book()">{{ locateDriver == false ?
-            'Pedir taxi':'Buscando conductores ...'}}
+        <button ion-button block color="primary" [hidden]="!destination" [disabled]="locateDriver || !drivers.length"
+                (click)="book()">
+            {{ locateDriver == false ? 'Pedir servicio' : 'Buscando conductores'}}
             <ion-spinner name="dots" color="light" [hidden]="!locateDriver"></ion-spinner>
+        </button>
+        <button (click)="cancelBook()" ion-button block color="primary" *ngIf="locateDriver">
+            Cancelar
         </button>
     </div>
 </ion-content>

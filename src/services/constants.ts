@@ -8,7 +8,7 @@ export let TRIP_STATUS_CANCELED = 'CANCELED';
 export let TRIP_STATUS_GOING = 'GOING';
 export let TRIP_STATUS_FINISHED = 'FINISHED';
 export let TRIP_STATUS_WAITING = 'WAITING';
-export let DEAL_TIMEOUT = 20000; // 20s
+export let DEAL_TIMEOUT = 20; // 20s
 
 export let EMAIL_VERIFICATION_ENABLED = false; // send verification email after user register
 export let ENABLE_SIGNUP = true;

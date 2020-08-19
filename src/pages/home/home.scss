@@ -1,46 +1,96 @@
 page-home,
 .home {
-  // ion-input{
-  //   margin: 0;
-  // }
-  ion-header img{
+  .fab.fab-ios {
+    border-radius: 5px;
+    width: 42px;
+    height: 42px;
+  }
+
+  .fab-close-icon {
+    line-height: 42px;
+  }
+
+  .fab-list-active {
+    width: 250px;
+    align-items: normal;
+
+    ion-list {
+      margin: 0;
+
+      ion-item {
+        background: #E2A100;
+        border-bottom-right-radius: 50px;
+        border-top-right-radius: 50px;
+        margin-bottom: 10px;
+        color: #ffffff;
+
+        ion-label {
+          white-space: normal;
+        }
+
+        span {
+          text-shadow: 1px 1px #3c484f;
+        }
+
+        ion-icon {
+          text-shadow: 1px 1px #3c484f;
+        }
+      }
+    }
+  }
+
+  ion-header img {
     height: 30px;
     width: 30px;
     border-radius: 100%;
   }
-  .search-icon{
-    font-size:20px;
+
+  .search-icon {
+    font-size: 20px;
+    min-width: 15px;
   }
-  ion-input{
+
+  ion-input {
     background: #eee;
   }
-  .active img{
+
+  .active img {
     background: color($colors, secondary);
   }
-  ion-col{
+
+  ion-col {
     text-align: center
   }
-  ion-col img{
+
+  ion-col img {
     width: 40px;
     padding: 5px;
     border-radius: 100%;
   }
-  ion-col p { margin: 0}
-  ion-row{
+
+  ion-col p {
+    margin: 0
+  }
+
+  ion-row {
     background: #fff;
     border-radius: 3px;
     border: 1px solid #eee;
   }
+
   .list-md {
     margin: -1px 0 0px;
   }
-  .label-md{
+
+  .label-md {
     margin: 13px -50px 13px 0;
   }
-  .text-input-md{
+
+  .text-input-md {
     font-size: 14px;
     margin: 8px 5px;
   }
+
   #map {
     width: 100%;
   }
@@ -48,7 +98,7 @@ page-home,
   .map-overlay {
     position: absolute;
     top: 5px;
-    left:5px;
+    left: 5px;
     right: 5px;
 
     ion-grid {
@@ -121,5 +171,24 @@ page-home,
     .fee {
       font-weight: bold;
     }
+  }
+
+  ion-select {
+    min-width: 100%;
+    background: #eeeeee;
+    color: #949494;
+  }
+
+  .select-ios .select-icon {
+    display: none;
+  }
+
+  .select-ios {
+    padding: 11px 8px 11px 8px;
+  }
+
+  .text-input-ios {
+    padding: 11px 8px 11px 8px;
+    margin: 0;
   }
 }

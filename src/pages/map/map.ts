@@ -1,9 +1,9 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
-import { Geolocation } from '@ionic-native/geolocation';
-import { PlaceService } from "../../services/place-service";
-import { HomePage } from "../home/home";
-import { TripService } from "../../services/trip-service";
+import {ChangeDetectorRef, Component} from '@angular/core';
+import {NavController, NavParams} from 'ionic-angular';
+import {Geolocation} from '@ionic-native/geolocation';
+import {PlaceService} from "../../services/place-service";
+import {HomePage} from "../home/home";
+import {TripService} from "../../services/trip-service";
 
 declare var google: any;
 
@@ -41,18 +41,20 @@ export class MapPage {
         zoom: 16,
         center: latLng,
         mapTypeId: google.maps.MapTypeId.ROADMAP,
-        mapTypeControl: false
+        mapTypeControl: false,
+        zoomControl: false,
+        streetViewControl: false,
+        disableDefaultUI: true,
+        fullscreenControl: false
       });
       this.marker = new google.maps.Marker({map: this.map, position: latLng, icon: null});
       this.marker.setMap(this.map);
       this.map.addListener('center_changed', (event) => {
         let center = this.map.getCenter();
-        console.log("Camara center_changed", center);
         this.marker.setPosition(center);
       })
       this.map.addListener('drag', (event) => {
         let center = this.map.getCenter();
-        console.log("Camara drag", center);
         this.marker.setPosition(center);
       })
     }).catch((error) => {

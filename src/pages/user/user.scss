@@ -2,6 +2,7 @@ page-user {
   #avatar {
     display: none;
   }
+
   .item-block {
     padding-left: 0;
   }
@@ -16,14 +17,17 @@ page-user {
       padding-right: 0;
     }
   }
+
   img {
     height: 100px;
     width: 100px;
     border-radius: 100%;
   }
+
   ion-label {
     white-space: normal;
   }
+
   .segment-hr {
     width: 90%;
     background: #fff;

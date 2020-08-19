@@ -8,8 +8,12 @@
 
 // position
 
-.header{
+.header {
   background: color($colors, primary)
+}
+
+.my-menu .menu-inner {
+  height: auto;
 }
 
 
@@ -41,7 +45,6 @@
 .light {
   color: color($colors, light);
 }
-
 
 
 // text style
@@ -83,6 +86,7 @@
   .item:first-child {
     border: none;
   }
+
   .item:last-child {
     border: none;
   }
@@ -121,6 +125,35 @@ a {
   text-decoration: none;
 }
 
-.card-content-ios{
+.card-content-ios {
   white-space: normal;
+}
+
+.card-header-md {
+  font-size: 2.0rem;
+  color: #593011;
+  padding: 16px;
+}
+
+ion-card-header {
+  white-space: normal;
+}
+
+ion-label {
+  white-space: normal;
+}
+
+.bg-primary {
+  background: #ecbe4c;
+}
+
+.modal-negociacion {
+  background: rgba(0, 0, 0, 0.42);
+
+  .modal-wrapper {
+    margin: 10% auto 0;
+    width: 90%;
+    height: 80%;
+    border-radius: 20px;
+  }
 }

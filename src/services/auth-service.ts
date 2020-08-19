@@ -1,9 +1,9 @@
-import { Injectable } from "@angular/core";
-import { AngularFireDatabase } from 'angularfire2/database';
-import { AngularFireAuth } from 'angularfire2/auth';
-import { Observable } from 'rxjs/Observable';
+import {Injectable} from "@angular/core";
+import {AngularFireDatabase} from 'angularfire2/database';
+import {AngularFireAuth} from 'angularfire2/auth';
+import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/take'
-import { DEFAULT_AVATAR, EMAIL_VERIFICATION_ENABLED } from "./constants";
+import {DEFAULT_AVATAR, EMAIL_VERIFICATION_ENABLED} from "./constants";
 
 @Injectable()
 export class AuthService {
@@ -71,7 +71,7 @@ export class AuthService {
       photoURL: photoUrl,
       email: user.email,
       phoneNumber: user.phoneNumber ? user.phoneNumber : '',
-      isPhoneVerified: user.isPhoneVerified
+      isPhoneVerified: user.isPhoneVerified ? user.isPhoneVerified : false
     })
   }
 
@@ -104,11 +104,28 @@ export class AuthService {
   }
 
   getToken() {
-
+    console.log(this.pdUSer);
+    return this.pdUSer.access_token;
   }
 
   setPDUser(value: Object) {
     this.pdUSer = value;
     window.localStorage.setItem('pdUser', JSON.stringify(this.pdUSer));
+  }
+
+  delete() {
+    let user = this.afAuth.auth.currentUser;
+    user.delete().then().catch()
+  }
+
+  setPushToken(token) {
+    let user = this.getUserData();
+    this.getUser(user.uid).update({
+      push_token: token
+    })
+  }
+
+  getAccessParam() {
+    return this.pdUSer.access_token;
   }
 }

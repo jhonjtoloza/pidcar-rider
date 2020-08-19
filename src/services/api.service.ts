@@ -1,18 +1,12 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { AuthService } from "./auth-service";
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {AuthService} from "./auth-service";
 
-/*
-  Generated class for the ApiProvider provider.
-
-  See https://angular.io/guide/dependency-injection for more info on providers
-  and Angular DI.
-*/
 @Injectable()
 export class ApiService {
 
   environment = {
-    apiUrl: 'http://192.168.1.11/puntosgold/web/',
+    apiUrl: 'http://192.168.1.4/puntosgold/web/',
     apiUrlhost: 'http://puntosdorados.com/'
   };
 

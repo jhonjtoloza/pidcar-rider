@@ -1,4 +1,4 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import {Pipe, PipeTransform} from '@angular/core';
 import {DomSanitizer} from "@angular/platform-browser";
 
 /**
@@ -12,11 +12,11 @@ import {DomSanitizer} from "@angular/platform-browser";
 export class SafeurlPipe implements PipeTransform {
   constructor(private sanitizer: DomSanitizer) {
   }
+
   /**
    * Takes a value and makes it lowercase.
    */
   transform(value: string) {
-    console.log("safeurl",value);
     return this.sanitizer.bypassSecurityTrustResourceUrl(value);
   }
 }

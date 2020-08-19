@@ -1,10 +1,10 @@
-import { Component } from '@angular/core';
-import { LoadingController, NavController, NavParams } from 'ionic-angular';
-import { PlaceService } from '../../services/place-service';
-import { Geolocation } from '@ionic-native/geolocation';
-import { HomePage } from "../home/home";
-import { MapPage } from "../map/map";
-import { TripService } from "../../services/trip-service";
+import {Component} from '@angular/core';
+import {LoadingController, NavController, NavParams} from 'ionic-angular';
+import {PlaceService} from '../../services/place-service';
+import {Geolocation} from '@ionic-native/geolocation';
+import {HomePage} from "../home/home";
+import {MapPage} from "../map/map";
+import {TripService} from "../../services/trip-service";
 
 /*
  Generated class for the PlacesPage page.

@@ -1,10 +1,10 @@
-
 page-tracking,
 .tracking {
-  #map{
+  #map {
     height: 100%;
-    width:100%;
+    width: 100%;
   }
+
   .tracking-info {
     position: absolute;
     bottom: 0;
@@ -38,6 +38,39 @@ page-tracking,
         top: 0;
         right: 0;
         font-size: 2em;
+      }
+    }
+  }
+
+
+  .taximetro {
+    font-family: LCD, monospace;
+    background-image: url("../assets/img/taximetro-fondo.png");
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    text-align: right;
+    height: 55px;
+    font-size: 47px;
+
+    .valor {
+      .sign {
+        color: white;
+        position: absolute;
+        left: 70px;
+        text-shadow: 1px 1px;
+      }
+
+      .blanco {
+        color: #ffffff;
+        position: absolute;
+        right: 70px;
+        text-shadow: 1px 1px;
+      }
+
+      .precio {
+        color: #2f3440;
+        position: absolute;
+        right: 70px;
       }
     }
   }

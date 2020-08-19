@@ -20,7 +20,8 @@
 </ion-header>
 
 <ion-content class="common-bg">
-  <p style="text-align:center;color:#bbb" *ngIf="places.length==0">No se encontraron lugares; Por favor, asegúrese de tener el permiso adecuado.</p>
+  <p style="text-align:center;color:#bbb" *ngIf="places.length==0">No se encontraron lugares; Por favor, asegúrese de
+    tener el permiso adecuado.</p>
   <ion-list>
     <ion-item *ngFor="let place of places" (click)="selectPlace(place)">
       <ion-icon name="ios-pin-outline" item-left>

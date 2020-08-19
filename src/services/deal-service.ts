@@ -1,56 +1,58 @@
-import { Injectable } from "@angular/core";
-import { AngularFireDatabase } from "angularfire2/database/database";
-import { DEAL_STATUS_PENDING } from "./constants";
-import { AuthService } from "./auth-service";
+import {Injectable} from "@angular/core";
+import {AngularFireDatabase} from "angularfire2/database/database";
+import {DEAL_STATUS_PENDING} from "./constants";
+import {AuthService} from "./auth-service";
+import {DriverService} from "./driver-service";
+import {TripService} from "./trip-service";
 
 @Injectable()
 export class DealService {
-  constructor(public db: AngularFireDatabase, public authService: AuthService) {
-  }
 
-  // sort driver by rating & distance
-  sortDriversList(drivers: any[]) {
-    return drivers.sort((a, b) => {
-      return (a.rating - a.distance / 5) - (b.rating - b.distance / 5);
-    })
+  constructor(
+    public db: AngularFireDatabase,
+    public authService: AuthService,
+    private driver: DriverService,
+    private tripService: TripService) {
   }
 
   // make deal to driver
-  makeDeal(driverId, origin, destination, distance, currency, note, promocode, discount) {
+  makeDeal(serivice_id, origin, destination, note, passenger, oferta, typeViaje, priceTaximetro) {
     let user = this.authService.getUserData();
-    console.log({
+    let drivers: any[] = this.driver.activeDrivers$.value;
+
+    const driversValues = {};
+    const driversList = {};
+    drivers.forEach(value => {
+      driversValues[value.uid] = true;
+    });
+    drivers.forEach(driver => {
+      driversList[driver.uid] = Object.assign({
+        changed: false,
+        accepted: false,
+        oferta: oferta
+      }, driver)
+    })
+    return this.db.object(`deals/${user.uid}`).set({
+      passenger: passenger,
       passengerId: user.uid,
-      currency: currency,
       origin: origin,
       destination: destination,
-      distance: distance,
+      distance: this.tripService.getDistance(),
+      duration: this.tripService.getDuration(),
       note: note,
       status: DEAL_STATUS_PENDING,
       createdAt: Date.now(),
-      promocode: promocode,
-      discount: discount
-    });
-    return this.db.object('deals/' + driverId).set({
-      passengerId: user.uid,
-      currency: currency,
-      origin: origin,
-      destination: destination,
-      distance: distance,
-      note: note,
-      status: DEAL_STATUS_PENDING,
-      createdAt: Date.now(),
-      promocode: promocode,
-      discount: discount
+      updated: Date.now(),
+      drivers: driversValues,
+      driversList: driversList,
+      type_trip: typeViaje,
+      oferta: oferta,
+      taximetro_price: priceTaximetro
     });
   }
 
-  // get deal by driverId
-  getDriverDeal(driverId) {
-    return this.db.object('deals/' + driverId);
-  }
-
-  // remove deal
-  removeDeal(driverId) {
-    return this.db.object('deals/' + driverId).remove();
+  getCurrentDeal() {
+    let user = this.authService.getUserData();
+    return this.db.object(`deals/${user.uid}`);
   }
 }

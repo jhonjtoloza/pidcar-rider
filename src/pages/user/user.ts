@@ -1,25 +1,26 @@
-import { Component } from '@angular/core';
-import { NavController, NavParams, ToastController, LoadingController, Platform, AlertController } from 'ionic-angular';
+import {Component} from '@angular/core';
+import {AlertController, LoadingController, NavController, NavParams, Platform, ToastController} from 'ionic-angular';
 
-import { LoginPage } from '../login/login';
-import { HomePage } from "../home/home";
+import {LoginPage} from '../login/login';
+import {HomePage} from "../home/home";
 
-import { AuthService } from "../../services/auth-service";
-import { TripService } from '../../services/trip-service';
-import { TranslateService } from '@ngx-translate/core';
+import {AuthService} from "../../services/auth-service";
+import {TranslateService} from '@ngx-translate/core';
 
-import * as firebase from 'firebase';
+import firebase from 'firebase';
 import 'rxjs/add/operator/map';
-import { AyudaPage } from "../ayuda/ayuda";
+import {ApiService} from "../../services/api.service";
+import {SocialSharing} from "@ionic-native/social-sharing";
 
 
 declare var Stripe: any;
+
 @Component({
   selector: 'page-user',
   templateUrl: 'user.html',
 })
 export class UserPage {
-  user:any = { photoURL: 'http://placehold.it/50x50' }; //setting default image, if user dont have images
+  user: any = {photoURL: 'http://placehold.it/50x50'};
   tripCount = 0;
   totalSpent = 0;
   tabs: any = 'profile';
@@ -27,10 +28,17 @@ export class UserPage {
   number: any;
   exp: any;
   cvv: any;
+  afiliado: any = {};
 
-  constructor(public nav: NavController, public authService: AuthService, public navParams: NavParams,public alertCtrl: AlertController,
-              public toastCtrl: ToastController, public loadingCtrl: LoadingController, public platform: Platform, public tripService: TripService, public translate: TranslateService) {
-    let userx = navParams.get('user');
+  mensaje: any = 'quiero invitarte a pertenecer al club Puntos Dorados y PD Taxi, Gana puntos por tus compras y carreras, Gana puntos por ' +
+    'las compras de tus amigos, compra con dinero o con tus puntos en cientos de negocios cerca en tu ciudad y participa' +
+    ' por premios.';
+
+  constructor(public nav: NavController, public authService: AuthService, public navParams: NavParams, public alertCtrl: AlertController,
+              public toastCtrl: ToastController, public loadingCtrl: LoadingController, public platform: Platform,
+              public translate: TranslateService,
+              private api: ApiService, private socialShare: SocialSharing) {
+    let userx = this.authService.getUserData();
     this.authService.getUser(userx.uid).take(1).subscribe(snapshot => {
       snapshot.uid = snapshot.$key;
       this.user = snapshot;
@@ -42,6 +50,9 @@ export class UserPage {
       this.exp = snapshot.exp;
       this.cvv = snapshot.cvv;
     });
+    this.api.get('api/app', true).then((value: any) => {
+      this.afiliado = value;
+    })
   }
 
   // save user info
@@ -60,7 +71,7 @@ export class UserPage {
   upload() {
     // Create a root reference
     let storageRef = firebase.storage().ref();
-    let loading = this.loadingCtrl.create({ content: 'Please wait...'});
+    let loading = this.loadingCtrl.create({content: 'Please wait...'});
     loading.present();
 
     for (let selectedFile of [(<HTMLInputElement>document.getElementById('avatar')).files[0]]) {
@@ -78,23 +89,16 @@ export class UserPage {
       this.nav.setRoot(LoginPage);
     });
   }
-  getTrips(){
-    let loading = this.loadingCtrl.create({ content: 'Please wait...'});
-    loading.present();
-    this.tripService.getTrips().take(1).subscribe(snapshot => {
-      this.trips = snapshot.reverse();
-      loading.dismiss();
-    });
-  }
 
-  verifyEmail(){
-    firebase.auth().currentUser.sendEmailVerification().then( data => {
+
+  verifyEmail() {
+    firebase.auth().currentUser.sendEmailVerification().then(data => {
       this.displayToast("Please check your inbox");
-    }).catch( err=> console.log(err));
+    }).catch(err => console.log(err));
   }
 
-  displayToast(message){
-    this.toastCtrl.create({ duration: 2000, message}).present();
+  displayToast(message) {
+    this.toastCtrl.create({duration: 2000, message}).present();
   }
 
 
@@ -141,7 +145,11 @@ export class UserPage {
     });
   }
 
-  goAyuda(){
-    this.nav.push(AyudaPage);
+
+  share() {
+    this.socialShare.share(this.mensaje + " " + this.authService.pdUSer.urlShare, 'Invitación a Puntos Dorados Club')
+      .then(function (data) {
+        console.log("Compartido ..." + data)
+      })
   }
 }

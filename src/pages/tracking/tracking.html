@@ -1,31 +1,41 @@
 <ion-header>
-    <ion-navbar color="primary">
-        <ion-title>{{'ON_THE_WAY' | translate}}</ion-title>
-    </ion-navbar>
+  <ion-navbar color="primary">
+    <ion-title>{{getTitle()}}</ion-title>
+  </ion-navbar>
 </ion-header>
 <ion-content>
-    <div id="map"></div>
-    <div class="align-bottom">
-        <ion-buttons>
-            <button ion-button block *ngIf="tripStatus == 'FINISHED'" (click)="showRateCard()">{{'SHOW_RATE_CARD' |
-                translate}}
-            </button>
-            <button ion-button block *ngIf="tripStatus == 'WAITING'" (click)="cancelTrip()">{{'CANCEL_TRIP' | translate}}
-            </button>
-        </ion-buttons>
-    </div>
+  <div id="map"></div>
+  <div class="align-bottom">
+    <ion-card *ngIf="trip.type_trip == 'Taximetro' && trip.status == 'GOING'">
+      <ion-card-content>
+        <div class="text-center">Taximetro PidCar</div>
+        <div class="taximetro">
+          <div class="valor">
+            <span class="sign">$</span>
+            <span class="blanco">{{'000,000'}}</span>
+            <span class="precio">{{trip.taximetro_value|number}}</span>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+    <ion-buttons>
+      <button ion-button block *ngIf="tripStatus == 'WAITING'"
+              (click)="cancelTrip()">{{'CANCEL_TRIP' | translate}}
+      </button>
+    </ion-buttons>
+  </div>
 </ion-content>
 <ion-footer>
-    <ion-item>
-        <ion-avatar item-left>
-            <img src="{{ (driver)?.photoURL }}"/>
-        </ion-avatar>
-        <h2>{{ (driver)?.name }} &nbsp; {{(driver)?.rating}}
-            <ion-icon name="md-star" color="yellow"></ion-icon>
-        </h2>
-        <p>{{ (driver)?.plate }} &middot; {{ (driver)?.brand }}</p>
-        <a item-right ion-button clear href="tel: {{ (driver)?.phoneNumber }} ">
-            <ion-icon name="call"></ion-icon>&nbsp;{{'CALL' | translate}}
-        </a>
-    </ion-item>
+  <ion-item>
+    <ion-avatar item-left>
+      <img src="{{ (driver)?.photoURL }}"/>
+    </ion-avatar>
+    <h2>{{ (driver)?.name }} &nbsp; {{(driver)?.rating}}
+      <ion-icon name="md-star" color="yellow"></ion-icon>
+    </h2>
+    <p>{{ (driver)?.plate }} &middot; {{ (driver)?.brand }}</p>
+    <a item-right ion-button clear href="tel: {{ (driver)?.phoneNumber }} ">
+      <ion-icon name="call"></ion-icon>&nbsp;{{'CALL' | translate}}
+    </a>
+  </ion-item>
 </ion-footer>

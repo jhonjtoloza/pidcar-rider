@@ -1,14 +1,13 @@
-import { Injectable } from "@angular/core";
-import { GOOGLE_MAP_API_KEY, GOOGLE_MAP_BASE_URL } from './constants'
+import {Injectable} from "@angular/core";
+import {GOOGLE_MAP_API_KEY, GOOGLE_MAP_BASE_URL} from './constants'
 
 import 'rxjs/add/operator/map'
-import { HttpClient } from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 
 @Injectable()
 export class PlaceService {
   private baseUrl: any;
   private apiKey: any;
-  private locality: any;
 
   constructor(public http: HttpClient) {
     this.baseUrl = GOOGLE_MAP_BASE_URL;
@@ -72,35 +71,10 @@ export class PlaceService {
     }
   }
 
-  // set locality from geocoder result
-  // @param results: Geocoder array results
-  setLocalityFromGeocoder(results) {
-    console.log("set locality call", results);
-    let component;
-    let address;
 
-    for (let i = 0; i < results.length; i++) {
-      address = results[i];
-      for (let j = 0; j < address.address_components.length; j++) {
-        component = address.address_components[j];
-        if (component.types[0] == 'locality') {
-          let locality = component.short_name.replace(/[\%\.\#\$\/\[\]]/, '_');
-          this.setLocality(locality);
-
-          return locality;
-        }
-      }
-    }
-
-    return false;
+  getCityName(results) {
+    const city = results[0].address_components.filter(ac => ~ac.types.indexOf('locality'))[0].long_name;
+    console.log(city);
+    return (city);
   }
-
-  setLocality(locality) {
-    return this.locality = locality;
-  }
-
-  getLocality() {
-    return this.locality;
-  }
-
 }

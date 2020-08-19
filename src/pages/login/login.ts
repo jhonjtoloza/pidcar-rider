@@ -1,12 +1,12 @@
-import { Component } from '@angular/core';
-import { AlertController, LoadingController, NavController, ToastController } from 'ionic-angular';
-import { RegisterPage } from '../register/register';
-import { HomePage } from '../home/home'
-import { AuthService } from "../../services/auth-service";
-import * as firebase from 'firebase';
-import { ENABLE_SIGNUP } from '../../services/constants';
-import { TranslateService } from '@ngx-translate/core';
-import { ApiService } from "../../services/api.service";
+import {Component} from '@angular/core';
+import {AlertController, LoadingController, NavController, ToastController} from 'ionic-angular';
+import {RegisterPage} from '../register/register';
+import {HomePage} from '../home/home'
+import {AuthService} from "../../services/auth-service";
+import firebase from 'firebase';
+import {ENABLE_SIGNUP} from '../../services/constants';
+import {TranslateService} from '@ngx-translate/core';
+import {ApiService} from "../../services/api.service";
 
 @Component({
   selector: 'page-login',
@@ -63,15 +63,15 @@ export class LoginPage {
   login() {
     if (this.email.length == 0 || this.password.length == 0) {
       this.alertCtrl.create({subTitle: 'Datos invalidos', buttons: ['ok']}).present();
-    }
-    else {
+    } else {
       let loading = this.loadingCtrl.create({content: 'Autenticando ...'});
       loading.present();
       this.authService.login(this.email, this.password).then(authData => {
         loading.setContent('Verificando cuenta en puntos darados');
         this.api.post('api/auth/login-by-token', {access_token: authData.uid}).then(value => {
           loading.dismiss();
-          this.authService.setPDUser(value)
+          this.authService.setPDUser(value);
+          this.nav.setRoot(HomePage);
         }).catch(() => {
           this.authService.logout();
           loading.dismiss();
@@ -79,13 +79,24 @@ export class LoginPage {
             message: 'Su cuenta no pudo ser verificada en puntos dorados, contacte a atención al cliente'
           })
         });
-        this.nav.setRoot(HomePage);
-      }, error => {
-        // in case of login error
+      }, (error: any) => {
+        console.log(error);
         loading.dismiss();
+        let message = 'Contraseña incorrecta.';
+        if (error.code === 'auth/user-not-found') {
+          message = 'Correo no registrado.'
+        } else if (error.code == "auth/network-request-failed") {
+          message = `Sin acceso a internet, asegurece de tener datos o una conexión wifi, 
+          recuerde que debe tener acceso permanente a internet para usar pd taxi`
+        }
         let alert = this.alertCtrl.create({
-          message: "Datos de ingreso invalidos",
-          buttons: ['OK']
+          message: message,
+          buttons: [
+            {
+              text: 'OK',
+              role: 'cancel'
+            }
+          ]
         });
         alert.present();
       });

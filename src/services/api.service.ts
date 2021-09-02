@@ -7,7 +7,7 @@ export class ApiService {
 
   environment = {
     apiUrl: 'http://192.168.1.4/puntosgold/web/',
-    apiUrlhost: 'http://puntosdorados.com/'
+    apiUrlhost: 'https://puntosdorados.com/'
   };
 
   constructor(private http: HttpClient, private auth: AuthService) {

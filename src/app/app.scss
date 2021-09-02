@@ -75,10 +75,13 @@
 
 // position
 .align-bottom {
+  background: #ffffff;
+  border-radius: 10px;
   position: fixed;
   bottom: 0;
   width: 100%;
-  padding: 5px;
+  padding: 10px;
+  -webkit-user-drag: auto;
 }
 
 .list-no-border {
@@ -155,5 +158,41 @@ ion-label {
     width: 90%;
     height: 80%;
     border-radius: 20px;
+  }
+}
+
+.text-danger {
+  color: #ff3d3d;
+  margin-left: 24px;
+}
+
+ion-input, ion-select {
+  border: 1px solid #e2a22c;
+  border-radius: 5px;
+}
+
+ion-input.ng-touched.ng-invalid {
+  border-color: #ff3d3d;
+}
+
+.text-center {
+  text-align: center;
+}
+
+small {
+  font-size: 1.2rem;
+}
+
+.label-ios[stacked] {
+  margin-bottom: 6px;
+  font-size: 1.5rem;
+}
+
+.tippy-tooltip {
+  font-size: 14px;
+}
+ion-input{
+  input::placeholder {
+    color: #000000 !important;
   }
 }

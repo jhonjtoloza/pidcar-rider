@@ -20,6 +20,16 @@
     "cordova-plugin-geolocation": {
       "PACKAGE_NAME": "com.pd.rider"
     },
+    "cordova-plugin-inappbrowser": {
+      "PACKAGE_NAME": "com.pd.rider"
+    },
+    "cordova-plugin-market": {
+      "PACKAGE_NAME": "com.pd.rider"
+    },
+    "cordova-plugin-request-location-accuracy": {
+      "PLAY_SERVICES_LOCATION_VERSION": "16.+",
+      "PACKAGE_NAME": "com.pd.rider"
+    },
     "cordova-plugin-splashscreen": {
       "PACKAGE_NAME": "com.pd.rider"
     },
@@ -29,24 +39,14 @@
     "cordova-plugin-whitelist": {
       "PACKAGE_NAME": "com.pd.rider"
     },
+    "cordova-plugin-x-socialsharing": {
+      "ANDROID_SUPPORT_V4_VERSION": "24.1.1+",
+      "PACKAGE_NAME": "com.pd.rider"
+    },
     "ionic-plugin-keyboard": {
       "PACKAGE_NAME": "com.pd.rider"
     },
     "onesignal-cordova-plugin": {
-      "PACKAGE_NAME": "com.pd.rider"
-    },
-    "cordova-plugin-request-location-accuracy": {
-      "PLAY_SERVICES_LOCATION_VERSION": "16.+",
-      "PACKAGE_NAME": "com.pd.rider"
-    },
-    "cordova-plugin-market": {
-      "PACKAGE_NAME": "com.pd.rider"
-    },
-    "cordova-plugin-inappbrowser": {
-      "PACKAGE_NAME": "com.pd.rider"
-    },
-    "cordova-plugin-x-socialsharing": {
-      "ANDROID_SUPPORT_V4_VERSION": "24.1.1+",
       "PACKAGE_NAME": "com.pd.rider"
     }
   },

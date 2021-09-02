@@ -28,7 +28,7 @@ export class MyApp {
   rootPage: any;
   nav: any;
   user = {};
-  private version = '2.6.0';
+  private version = '2.7.6';
 
   constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, public afAuth: AngularFireAuth,
               public authService: AuthService, public translate: TranslateService,

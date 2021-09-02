@@ -60,7 +60,6 @@ export class PlacesPage {
 
   // choose a place
   selectPlace(place) {
-    console.log(place);
     if (this.navParams.get('type') == 'origin') {
       this.tripService.setOrigin(place.vicinity, place.geometry.location.lat, place.geometry.location.lng);
       console.log("origin set");

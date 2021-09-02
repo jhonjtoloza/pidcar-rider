@@ -4,4 +4,4 @@ cd platforms/android/app/build/outputs/apk/release/
 
 jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ../../../../../../../pdrider.keystore app-release-unsigned.apk pdrider
 
-~/Android/Sdk/build-tools/28.0.3/zipalign -v 4 app-release-unsigned.apk ~/app-rider.2.6.0.apk
+~/Android/Sdk/build-tools/28.0.3/zipalign -v 4 app-release-unsigned.apk ~/app-rider.2.7.6.apk

@@ -14,11 +14,12 @@ export class TaximetroService {
   }
 
   loadTaximetro(city) {
-    console.log("cargando taximetro");
+
     this.api.post('/apidriver/app/taximetro', {city})
       .then((response: any) => {
         if (response !== false) {
           this.taximetro = response;
+          console.log("cargando taximetro");
         }
       });
   }
@@ -41,18 +42,61 @@ export class TaximetroService {
           return this.taximetro.minima
         }
       }
-      // time = time / 4;
-      // let precioDistancia = ((time / this.taximetro.segundos) * this.taximetro.distancia_precio);
-      // if (this.taximetro.con_unidades){
-      //   precioDistancia = precioDistancia * this.taximetro.precio_unidad;
-      // }
-      // this.price += precioDistancia;
     }
-    this.price = Math.round(this.price)
+    this.price = Math.round(this.price);
+    this.price += this.getRecargoPaP()
+    this.price += this.getRecargoDominicalFestivo();
+    this.price += this.getRecargoNocturno();
     return this.price;
   }
 
   getMinValor() {
     return this.taximetro.con_unidades ? this.taximetro.minima * this.taximetro.precio_unidad : this.taximetro.minima;
+  }
+
+  getRecargoDominicalFestivo() {
+    if (this.taximetro != null) {
+      let day = new Date().getDay();
+      if (day == 0 || this.taximetro.isFestivo)
+        return (this.taximetro.con_unidades) ?
+          this.taximetro.recargo_nocturno * this.taximetro.precio_unidad : this.taximetro.recargo_nocturno
+    }
+    return 0;
+  }
+
+  getRecargoPaP() {
+    if (this.taximetro != null) {
+      return (this.taximetro.con_unidades) ?
+        this.taximetro.recargo_puerta_puerta * this.taximetro.precio_unidad : this.taximetro.recargo_puerta_puerta
+    }
+    return 0;
+  }
+
+  getRecargoNocturno() {
+    if (this.taximetro != null) {
+      let desdeHasta = this.getTimeServer()
+      let hour = TaximetroService.getTime();
+      if (hour > desdeHasta[0] || hour <= desdeHasta[1]) {
+        return (this.taximetro.con_unidades) ?
+          this.taximetro.recargo_nocturno * this.taximetro.precio_unidad : this.taximetro.recargo_nocturno
+      }
+    }
+    return 0;
+  }
+
+  private static getTime() {
+    let hour = new Date().getHours();
+    let min = new Date().getMinutes();
+    let h = (hour <= 9) ? `0${hour}` : hour;
+    let m = (min <= 9) ? `0${min}` : min;
+    return `${h}:${m}`
+  }
+
+  private getTimeServer() {
+    let desde = this.taximetro.hora_inicio.split(':');
+    desde.pop()
+    let hasta = this.taximetro.hora_fin.split(':');
+    hasta.pop()
+    return [desde.join(':'), hasta.join(':')]
   }
 }

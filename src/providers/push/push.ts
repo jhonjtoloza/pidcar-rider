@@ -24,6 +24,11 @@ export class PushProvider {
     })
   }
 
+  playSound() {
+    const audio = new Audio('assets/taxi.mp3');
+    audio.play();
+  }
+
   register() {
     if (this.platform.is('cordova')) {
       this.oneSignal.startInit('7b2c5a65-52f1-4084-b2fc-f07b49f0742c', '927678779355');
@@ -33,6 +38,8 @@ export class PushProvider {
       });
       this.oneSignal.inFocusDisplaying(this.oneSignal.OSInFocusDisplayOption.None);
       this.oneSignal.handleNotificationReceived().subscribe((value) => {
+        console.log('handleNotificationReceived -> se espera sonido');
+        this.playSound();
         this.alert.create({
           title: value.payload.title,
           message: value.payload.body,

@@ -1,19 +1,16 @@
-import {ErrorHandler, NgModule} from '@angular/core';
+import {ErrorHandler, LOCALE_ID, NgModule} from '@angular/core';
 import {IonicApp, IonicErrorHandler, IonicModule} from 'ionic-angular';
 import {MyApp} from './app.component';
 import {BrowserModule} from '@angular/platform-browser';
 import {StatusBar} from '@ionic-native/status-bar';
 import {SplashScreen} from '@ionic-native/splash-screen';
-import {HttpModule} from '@angular/http';
 import {Geolocation} from '@ionic-native/geolocation';
-import {IonicStorageModule} from '@ionic/storage';
-// Import the AF2 Module
+
 import {AngularFireModule} from 'angularfire2';
 import {AngularFireDatabaseModule} from 'angularfire2/database';
 import {AngularFireAuthModule} from 'angularfire2/auth';
-// Import moment module
 import {MomentModule} from 'angular2-moment';
-// import services
+
 import {DriverService} from '../services/driver-service';
 
 import {PlaceService} from '../services/place-service';
@@ -51,6 +48,15 @@ import {SocialSharing} from "@ionic-native/social-sharing";
 import {TaximetroService} from "../services/taximetro.service";
 import {OfertaNegociacionPageModule} from "../pages/oferta-negociacion/oferta-negociacion.module";
 
+import localeCo from '@angular/common/locales/es-CO';
+import {registerLocaleData} from "@angular/common";
+import {DirectivesModule} from "../directives/directives.module";
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {TooltipModule} from "@teamhive/ngx-tooltip";
+
+
+registerLocaleData(localeCo);
+
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/lang/', '.json');
 }
@@ -80,8 +86,6 @@ export const firebaseConfig = {
   ],
   imports: [
     BrowserModule,
-    HttpModule,
-    IonicStorageModule.forRoot(),
     HttpClientModule,
     TranslateModule.forRoot({
       loader: {
@@ -104,7 +108,10 @@ export const firebaseConfig = {
     IonicModule.forRoot(MyApp, {
       mode: 'ios',
       backButtonText: ''
-    })
+    }),
+    DirectivesModule,
+    BrowserAnimationsModule,
+    TooltipModule.forRoot({})
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -136,6 +143,7 @@ export const firebaseConfig = {
     Market,
     SocialSharing,
     TaximetroService,
+    {provide: LOCALE_ID, useValue: 'es-CO'},
     {provide: ErrorHandler, useClass: IonicErrorHandler},
   ]
 })

@@ -55,7 +55,8 @@ export class TrackingPage {
   isFinish = false;
 
   ionViewDidLoad() {
-    this.dealService.getCurrentDeal().take(1)
+    this.dealService.getCurrentDeal()
+      .take(1)
       .subscribe((value: any) => {
         this.tripId = value.trip_key;
         this.tripService.getTrip(value.trip_key).take(1).subscribe((snapshot: any) => {
@@ -76,10 +77,10 @@ export class TrackingPage {
 
   watchTrip(tripId) {
     this.tripSubscripcion = this.tripService.getTrip(tripId)
-      .subscribe(snapshot => {
+      .subscribe((snapshot: any) => {
         this.trip = snapshot;
         this.tripStatus = snapshot.status;
-        if (this.trip.solictud_pago_puntos !== undefined && this.trip.solictud_pago_puntos === false) {
+        if (this.trip.solictud_pago_puntos === 0) {
           this.showSolicitudPago(this.trip.price);
         }
         if (this.tripStatus == TRIP_STATUS_CANCELED) {
@@ -96,27 +97,33 @@ export class TrackingPage {
       });
   }
 
+  ratingCard = null;
+
   showRateCard() {
-    let message = `<h3>Valor del servicio: $${this.trip.trip.price}</h3><h3>Puntos ganados: ${this.trip.trip.points_generated}</h3>
+    if (this.ratingCard == null) {
+      let message = `<h3>Valor del servicio: $${this.trip.trip.price}</h3><h3>Puntos ganados: ${this.trip.trip.points_generated}</h3>
                 <p>Por favor califica al conductor!</p>`;
-    this.alertCtrl.create({
-      title: 'Tarjeta final del servicio',
-      subTitle: 'Acumule y use los puntos ganados para pagar productos y servicios de puntos dorados.',
-      message: message,
-      mode: 'ios',
-      enableBackdropDismiss: false,
-      buttons: [{
-        text: 'Califica al conductor',
-        handler: () => {
-          this.showRatingAlert();
-        }
-      }, {
-        text: 'Decargar la App PuntosDorados',
-        handler: () => {
-          this.market.open('com.puntosdorados.cliente');
-        }
-      }],
-    }).present();
+      this.ratingCard = this.alertCtrl.create({
+        title: 'Tarjeta final del servicio',
+        subTitle: 'Acumule y use los puntos ganados para pagar productos y servicios de puntos dorados.',
+        message: message,
+        mode: 'ios',
+        enableBackdropDismiss: false,
+        buttons: [{
+          text: 'Califica al conductor',
+          handler: () => {
+            this.showRatingAlert();
+          }
+        }, {
+          text: 'Decargar la App PuntosDorados',
+          handler: () => {
+            this.market.open('com.puntosdorados.cliente');
+          }
+        }],
+      });
+      this.ratingCard.present()
+    }
+
   }
 
   showRatingAlert() {
@@ -221,12 +228,21 @@ export class TrackingPage {
       subTitle: 'Acumule y use los puntos ganados para pagar productos y servicios de puntos dorados' + mesj,
       buttons: [
         {
+          text: 'Cancelar',
+          handler: () => {
+            this.tripService.confirmPagoPuntos(this.tripId, false);
+            return true;
+          },
+        },
+        {
           text: 'Confirmar solicitud de pago',
           handler: () => {
             this.tripService.confirmPagoPuntos(this.tripId);
+            return true;
           }
         }
-      ]
+      ],
+      enableBackdropDismiss: false
     });
     await alert.present();
   }
@@ -235,12 +251,10 @@ export class TrackingPage {
     this.trackDriver = this.driverService.getDriverPosition(
       this.driver.uid,
       this.driver.driver_category_id
-    ).subscribe(snapshot => {
-      console.log(snapshot);
+    ).subscribe((snapshot: any) => {
       if (snapshot.l !== undefined) {
         let latLng = new google.maps.LatLng(snapshot.l[0], snapshot.l[1]);
         if (this.tripStatus == TRIP_STATUS_GOING) {
-          console.log(this.tripStatus);
           this.map.setCenter(latLng);
         }
         if (this.marker !== undefined) {

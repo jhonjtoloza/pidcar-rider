@@ -9,7 +9,6 @@ import {
   Platform
 } from 'ionic-angular';
 import {Geolocation} from '@ionic-native/geolocation';
-import {PlacesPage} from '../places/places';
 import {UserPage} from "../user/user";
 import {TrackingPage} from '../tracking/tracking';
 
@@ -39,6 +38,8 @@ import {PromoPage} from "../promo/promo";
 import {PuntosgoldPage} from "../puntosgold/puntosgold";
 import {TaximetroService} from "../../services/taximetro.service";
 import {OfertaNegociacionPage} from "../oferta-negociacion/oferta-negociacion";
+import {MapPage} from "../map/map";
+import {TooltipService} from "@teamhive/ngx-tooltip";
 
 declare var google: any;
 
@@ -48,6 +49,9 @@ declare var google: any;
 })
 
 export class HomePage {
+  startMarker: any;
+  directionsService: any;
+  directionsDisplay: any;
   mapId = Math.random() + 'map';
   vehicles: any = [];
   currentVehicle: any;
@@ -65,7 +69,8 @@ export class HomePage {
   markers = [];
   cancelTimer;
   typeViaje = "Taximetro";
-  priceTaximetro: number;
+  priceTaximetro: number = 0;
+  vicinity: '';
 
   selectOptions: any = {
     title: 'Seleccione una opcion',
@@ -89,10 +94,9 @@ export class HomePage {
               public tripService: TripService, public driverService: DriverService, public afAuth: AngularFireAuth,
               public authService: AuthService, public translate: TranslateService,
               public dealService: DealService, private push: PushProvider, private locationAccuracy: LocationAccuracy,
-              private events: Events, public modal: ModalController, private taximetroService: TaximetroService) {
+              private events: Events, public modal: ModalController, private taximetroService: TaximetroService,
+              private tooltipService: TooltipService) {
     this.translate.setDefaultLang('es');
-    this.origin = tripService.getOrigin();
-    this.destination = tripService.getDestination();
     afAuth.authState.subscribe(authData => {
       if (authData) {
         this.user = authService.getUserData();
@@ -101,7 +105,6 @@ export class HomePage {
         })
       }
     });
-
   }
 
   ionViewDidLoad() {
@@ -109,45 +112,47 @@ export class HomePage {
     this.openPromo();
   }
 
-  init() {
-    this.checkCurrentTrip();
-    this.showLoading();
-    if (this.platform.is('cordova')) {
-      this.push.register();
-      this.locationAccuracy.canRequest().then(() => {
-        this.locationAccuracy.request(this.locationAccuracy.REQUEST_PRIORITY_HIGH_ACCURACY).then(
-          () => {
-            this.settingService.getVehicleTypes().then(value => {
-              this.vehicles = value;
-              this.currentVehicle = this.vehicles[0];
-              this.loadMap();
-            });
-          },
-          () => {
-            this.hideLoading();
-            const alert = this.alertCtrl.create({
-              message: 'Por favor acepta activar el gps para un correcto funcionamiento.',
-              buttons: [
-                {
-                  text: 'OK',
-                  role: 'cancel'
-                }
-              ]
-            });
-            alert.present();
-            alert.onDidDismiss(() => {
-              this.init()
-            })
-          }
-        );
+  async init() {
+    let start = await this.checkCurrentTrip();
+    if (start){
+      this.showLoading();
+      if (this.platform.is('cordova')) {
+        this.push.register();
+        this.locationAccuracy.canRequest().then(() => {
+          this.locationAccuracy.request(this.locationAccuracy.REQUEST_PRIORITY_HIGH_ACCURACY).then(
+            () => {
+              this.settingService.getVehicleTypes().then(value => {
+                this.vehicles = value;
+                this.currentVehicle = this.vehicles[0];
+                this.loadMap();
+              });
+            },
+            () => {
+              this.hideLoading();
+              const alert = this.alertCtrl.create({
+                message: 'Por favor acepta activar el gps para un correcto funcionamiento.',
+                buttons: [
+                  {
+                    text: 'OK',
+                    role: 'cancel'
+                  }
+                ]
+              });
+              alert.present();
+              alert.onDidDismiss(() => {
+                this.init()
+              })
+            }
+          );
 
-      });
-    } else {
-      this.settingService.getVehicleTypes().then(value => {
-        this.vehicles = value;
-        this.currentVehicle = this.vehicles[0];
-        this.loadMap();
-      });
+        });
+      } else {
+        this.settingService.getVehicleTypes().then(value => {
+          this.vehicles = value;
+          this.currentVehicle = this.vehicles[0];
+          this.loadMap();
+        });
+      }
     }
   }
 
@@ -156,35 +161,38 @@ export class HomePage {
   }
 
   checkCurrentTrip() {
-    this.tripService.getTrips().take(1)
-      .subscribe(trips => {
-        let result = trips.reverse();
-        if (result.length) {
-          let trip = result[0];
-          if (trip.status == TRIP_STATUS_WAITING || trip.status == DEAL_STATUS_ACCEPTED || trip.status == TRIP_STATUS_GOING) {
-            this.hideLoading();
-            this.tripService.setId(trip.$key);
-            this.nav.setRoot(TrackingPage);
+    return new Promise(resolve => {
+      this.tripService.getTrips().take(1)
+        .subscribe((trips: any[]) => {
+          let result = trips.reverse();
+          if (result.length) {
+            let trip = result[0];
+            if (trip.status == TRIP_STATUS_WAITING || trip.status == DEAL_STATUS_ACCEPTED || trip.status == TRIP_STATUS_GOING) {
+              resolve(false)
+              this.tripService.setId(trip.$key);
+              this.nav.setRoot(TrackingPage);
+            }
+            if (trip.rating == undefined && trip.status == TRIP_STATUS_FINISHED) {
+              resolve(false)
+              this.tripService.setId(trip.$key);
+              this.nav.setRoot(TrackingPage, {show_card: true});
+            }
           }
-          if (trip.rating == undefined && trip.status == TRIP_STATUS_FINISHED) {
-            this.hideLoading();
-            this.tripService.setId(trip.$key);
-            this.nav.setRoot(TrackingPage, {show_card: true});
-          }
-        }
-      });
+          resolve(true)
+        });
+    })
   }
 
-  chooseVehicle(index) {
-    for (let i = 0; i < this.vehicles.length; i++) {
-      this.vehicles[i].active = (i == index);
-      if (i == index) {
-        this.tripService.setVehicle(this.vehicles[i]);
-        this.currentVehicle = this.vehicles[i];
-      }
-    }
-    this.driverService.startTrack(this.currentVehicle.id, this.origin.lat, this.origin.lng);
-  }
+  // chooseVehicle(index) {
+  //   for (let i = 0; i < this.vehicles.length; i++) {
+  //     this.vehicles[i].active = (i == index);
+  //     if (i == index) {
+  //       this.tripService.setVehicle(this.vehicles[i]);
+  //       this.currentVehicle = this.vehicles[i];
+  //     }
+  //   }
+  //   this.driverService.startTrack(this.currentVehicle.id, this.origin.lat, this.origin.lng);
+  // }
 
   goProfilePage() {
     this.nav.push(UserPage, {user: this.user});
@@ -192,15 +200,8 @@ export class HomePage {
 
   async loadMap() {
     let resp = await this.geolocation.getCurrentPosition();
-    if (this.origin) {
-      this.startLatLng = new google.maps.LatLng(this.origin.location.lat, this.origin.location.lng);
-    } else {
-      this.startLatLng = new google.maps.LatLng(resp.coords.latitude, resp.coords.longitude);
-      this.tripService.setOrigin("Cargando ...", resp.coords.latitude, resp.coords.longitude)
-    }
-    this.driverService.startTrack(this.currentVehicle.id, this.startLatLng.lat(), this.startLatLng.lng());
-    let directionsService = new google.maps.DirectionsService();
-    let directionsDisplay = new google.maps.DirectionsRenderer();
+    this.startLatLng = new google.maps.LatLng(resp.coords.latitude, resp.coords.longitude);
+    this.tripService.setOrigin("Cargando ...", resp.coords.latitude, resp.coords.longitude)
     this.map = new google.maps.Map(document.getElementById(this.mapId), {
       zoom: 15,
       center: this.startLatLng,
@@ -209,68 +210,35 @@ export class HomePage {
       zoomControl: false,
       streetViewControl: false,
       disableDefaultUI: true,
-      fullscreenControl: false
+      fullscreenControl: false,
     });
 
-    let mapx = this.map;
-    directionsDisplay.setMap(mapx);
     let geocoder = new google.maps.Geocoder();
     geocoder.geocode({'latLng': this.map.getCenter()}, (results, status) => {
       if (status == google.maps.GeocoderStatus.OK) {
         this.taximetroService.loadTaximetro(this.placeService.getCityName(results));
         if (!this.origin) {
-          this.origin = this.placeService.formatAddress(results[0]);
+          this.origin = this.placeService.formatAddress(results);
+          this.vicinity = this.origin.vicinity;
           this.tripService.setOrigin(this.origin.vicinity, this.origin.location.lat, this.origin.location.lng);
           this.setOrigin();
         } else {
           this.setOrigin();
         }
-        if (this.destination && this.destination.location.lat != null) {
-          this.placeService.getDirection(this.origin.location.lat, this.origin.location.lng, this.destination.location.lat,
-            this.destination.location.lng).subscribe((result: any) => {
-            if (result.routes.length) {
-              this.tripService.setDistance(result.routes[0].legs[0].distance);
-              this.tripService.setDuration(result.routes[0].legs[0].duration);
-              console.log(result.routes[0].legs[0].distance.text);
-              console.log(result.routes[0].legs[0].duration.text);
-              this.priceTaximetro = this.taximetroService.calculatePrice();
-            } else {
-              this.alertCtrl.create({
-                subTitle: 'Lo sentimos no encontramos una ruta disponible.',
-                buttons: ['OK']
-              }).present();
-            }
-          });
-        }
-        this.vehicles[0].active = true;
-        this.currentVehicle = this.vehicles[0];
       }
     });
-
-    if (this.destination) {
-      if (this.destination.location.lat != null) {
-        this.destLatLng = new google.maps.LatLng(this.destination.location.lat, this.destination.location.lng);
-        let bounds = new google.maps.LatLngBounds();
-        bounds.extend(this.startLatLng);
-        bounds.extend(this.destLatLng);
-
-        mapx.fitBounds(bounds);
-        let request = {
-          origin: this.startLatLng,
-          destination: this.destLatLng,
-          travelMode: google.maps.TravelMode.DRIVING
-        };
-        directionsService.route(request, function (response, status) {
-          if (status == google.maps.DirectionsStatus.OK) {
-            console.log(response);
-            directionsDisplay.setDirections(response);
-            directionsDisplay.setMap(mapx);
-          }
-        });
-      }
-    }
     this.hideLoading();
-    this.showDriversInMap();
+    this.tooltips();
+  }
+
+  tooltips() {
+    this.tooltipService.showAll(1000, "dir");
+    setTimeout(() => {
+      this.tooltipService.hideAll();
+      this.tooltipService.showAll(1000, "btn");
+      setTimeout(() => this.tooltipService.hideAll(), 8000)
+    }, 8000);
+
   }
 
   showNotePopup() {
@@ -367,7 +335,7 @@ export class HomePage {
   }
 
   chooseOrigin() {
-    this.nav.push(PlacesPage, {type: 'origin'});
+    this.openModalDestination('origin');
   }
 
   chooseDestination() {
@@ -402,6 +370,7 @@ export class HomePage {
                   handler: (data) => {
                     this.tripService.setDestination(data.vicinity, null, null);
                     this.destination = this.tripService.getDestination();
+                    this.setRoute()
                   }
                 }
               ]
@@ -412,7 +381,7 @@ export class HomePage {
         {
           text: 'Buscar ubicación GPS',
           handler: () => {
-            this.nav.push(PlacesPage, {type: 'destination'});
+            this.openModalDestination('destination');
           }
         }
       ]
@@ -420,17 +389,98 @@ export class HomePage {
     alert.present();
   }
 
+  openModalDestination(type) {
+    let modal = this.modal.create(MapPage, {type: type});
+    modal.present();
+    modal.onDidDismiss(data => {
+      if (type == 'origin') {
+        this.origin = this.tripService.getOrigin();
+        this.startLatLng = new google.maps.LatLng(this.origin.location.lat, this.origin.location.lng);
+        this.setOrigin();
+        this.driverService.startTrack(this.currentVehicle.id, this.origin.location.lat, this.origin.location.lng);
+        this.showDriversInMap();
+      } else {
+        this.destination = this.tripService.getDestination();
+        this.setRoute()
+      }
+    })
+  }
+
+  setRoute() {
+    if (this.directionsDisplay){
+      this.directionsDisplay.setMap(null);
+      this.directionsDisplay = null;
+      this.map.setCenter(this.startMarker.getPosition())
+    }
+    if (this.destination && this.destination.location.lat != null) {
+      this.directionsService = new google.maps.DirectionsService();
+      this.directionsDisplay = new google.maps.DirectionsRenderer({
+        polylineOptions: {
+          strokeColor: '#ffa200',
+          strokeOpacity: 1.0,
+          strokeWeight: 4
+        },
+      });
+      this.directionsDisplay.setMap(this.map);
+
+      this.placeService.getDirection(this.origin.location.lat, this.origin.location.lng, this.destination.location.lat,
+        this.destination.location.lng).subscribe((result: any) => {
+        if (result.routes.length) {
+          this.tripService.setDistance(result.routes[0].legs[0].distance);
+          this.tripService.setDuration(result.routes[0].legs[0].duration);
+          this.priceTaximetro = this.taximetroService.calculatePrice();
+        } else {
+          this.alertCtrl.create({
+            subTitle: 'Lo sentimos no encontramos una ruta disponible.',
+            buttons: ['OK']
+          }).present();
+        }
+      });
+      this.destLatLng = new google.maps.LatLng(this.destination.location.lat, this.destination.location.lng);
+
+      let bounds = new google.maps.LatLngBounds();
+      bounds.extend(this.startLatLng);
+      bounds.extend(this.destLatLng);
+      this.map.fitBounds(bounds);
+      // let point = this.map.getCenter();
+      // let projection = this.map.getProjection();
+      // let pixelpoint = projection.fromLatLngToPoint(point);
+      // pixelpoint.y = pixelpoint.y - 600;
+      // let newpoint = projection.fromPointToLatLng(pixelpoint);
+      // this.map.setCenter(newpoint)
+      let request = {
+        origin: this.startLatLng,
+        destination: this.destLatLng,
+        travelMode: google.maps.TravelMode.DRIVING
+      };
+      this.directionsService.route(request, (response, status) => {
+        if (status == google.maps.DirectionsStatus.OK) {
+          console.log(response);
+          this.directionsDisplay.setDirections(response);
+          this.directionsDisplay.setMap(this.map);
+        }
+      });
+    }
+  }
+
   setOrigin() {
     let latLng = new google.maps.LatLng(this.origin.location.lat, this.origin.location.lng);
-    let startMarker = new google.maps.Marker({
-      map: this.map,
-      animation: google.maps.Animation.DROP,
-      position: latLng
-    });
-    startMarker.setMap(this.map);
-    if (this.destination && this.destination.location.lat != null)
-      startMarker.setMap(null);
-    this.map.setCenter(latLng);
+
+    this.vicinity = this.origin.vicinity;
+    if (!this.startMarker) {
+      this.startMarker = new google.maps.Marker({
+        map: this.map,
+        animation: google.maps.Animation.DROP,
+        position: latLng
+      });
+      this.startMarker.setMap(this.map);
+      this.map.setCenter(latLng);
+    } else {
+      this.startMarker.setPosition(latLng);
+      this.map.setCenter(latLng)
+    }
+    this.driverService.startTrack(this.currentVehicle.id, this.origin.location.lat, this.origin.location.lng)
+    this.showDriversInMap();
   }
 
   showLoading() {
@@ -523,5 +573,9 @@ export class HomePage {
       ]
     });
     alert.present();
+  }
+
+  setTextVicinity() {
+    this.tripService.setOrigin(this.origin.vicinity, this.origin.location.lat, this.origin.location.lng)
   }
 }

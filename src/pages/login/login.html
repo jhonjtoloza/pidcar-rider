@@ -6,28 +6,31 @@
     </div>
     <h2 ion-text color="light">{{'LOGIN' | translate }}</h2>
   </div>
-  <ion-list class="list-form" padding>
-    <ion-item>
-      <ion-label stacked>{{'EMAIL_ADDRESS' | translate }}</ion-label>
-      <ion-input type="email" [(ngModel)]="email"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label stacked>{{'PASSWORD' | translate }}</ion-label>
-      <ion-input type="{{type}}" [(ngModel)]="password"></ion-input>
-      <button ion-button clear item-right (click)="toggle()">
-        <ion-icon name="eye"></ion-icon>
-      </button>
-    </ion-item>
-    <ion-item>
-      <button padding ion-button block (click)="login()">{{'LOGIN' | translate }}</button>
-    </ion-item>
-    <ion-item no-lines>
+  <ion-list class="list-form" padding no-lines>
+    <form (submit)="login($event)" [formGroup]="model">
+      <ion-item controlErrorContainer>
+        <ion-label stacked>{{'EMAIL_ADDRESS' | translate }}</ion-label>
+        <ion-input type="email" formControlName="email"></ion-input>
+      </ion-item>
+      <ion-item controlErrorContainer>
+        <ion-label stacked>{{'PASSWORD' | translate }}</ion-label>
+        <ion-input type="{{type}}" formControlName="password"></ion-input>
+        <button type="button" style="margin-top: 30px" ion-button clear item-right (click)="toggle()">
+          <ion-icon name="eye"></ion-icon>
+        </button>
+      </ion-item>
+      <ion-item>
+        <button padding ion-button block type="submit">{{'LOGIN' | translate }}</button>
+      </ion-item>
+    </form>
+    <ion-item no-lines class="text-center">
       <button ion-button clear (click)="reset()">
         {{'FORGOT'|translate}}
       </button>
     </ion-item>
+    <div style="padding-top: 20px" class="pading text-center">
+      <h5>¿Aun no tienen una cuenta?</h5>
+      <button ion-button block class="ver" (click)="signup()">Registrate</button>
+    </div>
   </ion-list>
 </ion-content>
-<ion-footer *ngIf="isRegisterEnabled">
-  <button ion-button clear block (click)="signup()">{{'REGISTER' | translate }}</button>
-</ion-footer>

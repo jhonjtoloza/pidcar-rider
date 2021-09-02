@@ -37,7 +37,8 @@ export class AuthService {
   // register new account
   register(email, password, name, phoneNumber) {
     return Observable.create(observer => {
-      this.afAuth.auth.createUserWithEmailAndPassword(email, password).then((authData: any) => {
+      this.afAuth.auth.createUserWithEmailAndPassword(email.trim(), password.trim())
+        .then((authData: any) => {
         authData.name = name;
         authData.phoneNumber = phoneNumber;
         authData.isPhoneVerified = false;
@@ -78,7 +79,7 @@ export class AuthService {
   // create new user if not exist
   createUserIfNotExist(user) {
     // check if user does not exist
-    this.getUser(user.uid).take(1).subscribe(snapshot => {
+    this.getUser(user.uid).take(1).subscribe((snapshot: any) => {
       if (snapshot.$value === null) {
         // update passenger object
         this.updateUserProfile(user);

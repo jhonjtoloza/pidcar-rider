@@ -176,7 +176,7 @@ page-home,
   ion-select {
     min-width: 100%;
     background: #eeeeee;
-    color: #949494;
+    color: #161616;
   }
 
   .select-ios .select-icon {
@@ -188,7 +188,41 @@ page-home,
   }
 
   .text-input-ios {
-    padding: 11px 8px 11px 8px;
+    padding: 10px 8px 11px 8px;
+    margin: 0;
+  }
+}
+.align-bottom{
+  background: #ffffff;
+  border-radius: 10px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  padding: 0 10px 10px 10px;
+  -webkit-user-drag: auto;
+
+  .list-ios {
+    margin: -1px 0 5px;
+  }
+  .item-ios{
+    padding-left: 0;
+  }
+  .item-ios.item-block .item-inner{
+    padding-right: 0;
+  }
+  .item-block{
+    margin: 5px 0;
+  }
+}
+.text-input[disabled]{
+  opacity: 1;
+}
+.note{
+  .label-ios{
+    margin: 0 8px 0 0;
+  }
+
+  .item-block{
     margin: 0;
   }
 }

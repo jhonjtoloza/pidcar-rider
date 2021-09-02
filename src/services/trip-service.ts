@@ -11,8 +11,8 @@ export class TripService {
   private trips: any;
   private origin: any;
   private destination: any;
-  private distance: { tex: string, value: number };
-  private duration: { tex: string, value: number };
+  private distance: { text: string, value: number };
+  private duration: { text: string, value: number };
   private note: string;
   private vehicle: any;
   private typeViaje: "Taximetro"; // Taximetro | Oferta
@@ -22,7 +22,14 @@ export class TripService {
 
   constructor(public db: AngularFireDatabase,
               public authService: AuthService) {
-
+    this.distance = {
+      text: 'N/A',
+      value: 0
+    };
+    this.duration = {
+      text: 'N/A',
+      value: 0
+    }
   }
 
   getAll() {
@@ -59,11 +66,11 @@ export class TripService {
     return this.distance = distance;
   }
 
-  getDistance(): { tex: string, value: number } {
+  getDistance(): { text: string, value: number } {
     return this.distance;
   }
 
-  getDuration(): { tex: string, value: number } {
+  getDuration(): { text: string, value: number } {
     return this.duration
   }
 
@@ -119,9 +126,9 @@ export class TripService {
     }).then().catch()
   }
 
-  confirmPagoPuntos(tripId) {
+  confirmPagoPuntos(tripId, confirma = true) {
     this.db.object(`trips/${tripId}`).update({
-      solictud_pago_puntos: true
+      solictud_pago_puntos: confirma
     }).then().catch()
   }
 

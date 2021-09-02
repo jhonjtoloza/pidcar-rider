@@ -4,18 +4,16 @@ import {RegisterPage} from '../register/register';
 import {HomePage} from '../home/home'
 import {AuthService} from "../../services/auth-service";
 import firebase from 'firebase';
-import {ENABLE_SIGNUP} from '../../services/constants';
 import {TranslateService} from '@ngx-translate/core';
 import {ApiService} from "../../services/api.service";
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 
 @Component({
   selector: 'page-login',
   templateUrl: 'login.html'
 })
 export class LoginPage {
-  email: string = "";
-  password: string = "";
-  isRegisterEnabled: any = true;
+  model: FormGroup;
   type = 'password';
 
   constructor(
@@ -25,12 +23,21 @@ export class LoginPage {
     public loadingCtrl: LoadingController,
     public toast: ToastController,
     public translate: TranslateService,
-    public api: ApiService) {
-    this.isRegisterEnabled = ENABLE_SIGNUP;
+    public api: ApiService,
+    private form: FormBuilder) {
+    this.model = this.form.group({
+      email: new FormControl('', {
+        updateOn: 'blur',
+        validators: [Validators.required, Validators.email]
+      }),
+      password: new FormControl('', {
+        validators: [Validators.required, Validators.minLength(6)]
+      })
+    })
   }
 
   signup() {
-    this.nav.setRoot(RegisterPage);
+    this.nav.push(RegisterPage);
   }
 
   reset() {
@@ -60,23 +67,23 @@ export class LoginPage {
     });
   }
 
-  login() {
-    if (this.email.length == 0 || this.password.length == 0) {
-      this.alertCtrl.create({subTitle: 'Datos invalidos', buttons: ['ok']}).present();
-    } else {
-      let loading = this.loadingCtrl.create({content: 'Autenticando ...'});
+  login(e) {
+    e.preventDefault();
+    if (this.model.valid) {
+      let loading = this.loadingCtrl.create({content: 'Autenticando espere...'});
       loading.present();
-      this.authService.login(this.email, this.password).then(authData => {
-        loading.setContent('Verificando cuenta en puntos darados');
-        this.api.post('api/auth/login-by-token', {access_token: authData.uid}).then(value => {
-          loading.dismiss();
-          this.authService.setPDUser(value);
-          this.nav.setRoot(HomePage);
-        }).catch(() => {
-          this.authService.logout();
-          loading.dismiss();
-          this.alertCtrl.create({
-            message: 'Su cuenta no pudo ser verificada en puntos dorados, contacte a atención al cliente'
+      this.authService.login(this.model.controls.email.value, this.model.controls.password.value)
+        .then(authData => {
+          loading.setContent('Verificando cuenta en puntos darados');
+          this.api.post('api/auth/login-by-token', {access_token: authData.uid}).then(value => {
+            loading.dismiss();
+            this.authService.setPDUser(value);
+            this.nav.setRoot(HomePage);
+          }).catch(() => {
+            this.authService.logout();
+            loading.dismiss();
+            this.alertCtrl.create({
+              message: 'Su cuenta no pudo ser verificada en puntos dorados, contacte a atención al cliente'
           })
         });
       }, (error: any) => {

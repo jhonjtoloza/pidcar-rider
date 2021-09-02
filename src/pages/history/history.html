@@ -12,16 +12,26 @@
 <ion-content>
   <ion-card *ngFor="let trip of trips">
     <ion-card-content>
-      <ion-row>
-        <ion-col>
-          <p>ID: {{ trip.createdAt }}</p>
-        </ion-col>
-        <ion-col>
-          <h1 style="color: #8BC34A; font-weight: 600;">$ {{ trip?.trip?.price|number
-            }}</h1>
-          <p>Puntos ganados: {{trip?.trip?.points_generated}}</p>
+      <ion-list>
+
+      </ion-list>
+      <ion-item>
+          <p style="font-size: 1.6rem"><strong>ID: {{ trip.createdAt }}</strong></p>
           <!--<p>Promo: {{ trip.promo}}</p>-->
           <!--<p>descuento: {{trip.discount}}</p>-->
+      </ion-item>
+      <ion-row>
+        <ion-col>
+          <p>Valor del servicio</p>
+          <h1 style="color: #8BC34A; font-weight: 600;">
+            $ {{ trip?.trip?.price|number
+            }}</h1>
+        </ion-col>
+        <ion-col>
+          <p>Puntos ganados</p>
+          <h1 style="color: #8BC34A; font-weight: 600;">
+            {{trip?.trip?.points_generated|number}}
+          </h1>
         </ion-col>
       </ion-row>
       <ion-item>

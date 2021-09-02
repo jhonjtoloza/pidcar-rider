@@ -25,7 +25,7 @@ export class HistoryPage {
   getTrips() {
     let loading = this.loadingCtrl.create({content: 'Cargando ...'});
     loading.present();
-    this.tripService.getTrips().take(1).subscribe(snapshot => {
+    this.tripService.getTrips().take(1).subscribe((snapshot: any[]) => {
       this.trips = snapshot.reverse();
       loading.dismiss();
     });

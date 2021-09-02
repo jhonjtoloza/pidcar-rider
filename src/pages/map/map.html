@@ -1,13 +1,13 @@
 <ion-header>
-  <ion-navbar color="white">
+  <ion-navbar color="primary">
     <ion-title>Seleccione un punto en el mapa</ion-title>
-    <ion-buttons end>
-      <button ion-button (click)="selectPlace()">
-        OK
-      </button>
-    </ion-buttons>
   </ion-navbar>
 </ion-header>
 <ion-content>
-  <div #map id="map"></div>
+  <div #map id="map">
+  </div>
+  <img src="assets/img/iconmap.png" class="marker" alt="icon">
+  <ion-footer>
+    <button block ion-button (click)="selectPlace()">Listo</button>
+  </ion-footer>
 </ion-content>

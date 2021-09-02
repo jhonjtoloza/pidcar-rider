@@ -1,12 +1,16 @@
 page-map {
-
+  .toolbar-ios ion-title{
+    padding: 0;
+  }
   #map {
     height: 100%;
   }
 
   .marker {
-    position: fixed;
-    z-index: 1000;
+    position: absolute;
+    top: 46.5%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
 
   .toolbar-title-md {

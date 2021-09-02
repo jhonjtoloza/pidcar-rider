@@ -1,7 +1,8 @@
 import {Component} from '@angular/core';
 import {IonicPage, ViewController} from 'ionic-angular';
-import {Observable, Subscription} from "rxjs";
+import {Subscription} from "rxjs";
 import {DealService} from "../../services/deal-service";
+import {FirebaseObjectObservable} from "angularfire2/database";
 import {DEAL_STATUS_ACCEPTED} from "../../services/constants";
 
 @IonicPage()
@@ -12,7 +13,7 @@ import {DEAL_STATUS_ACCEPTED} from "../../services/constants";
 export class OfertaNegociacionPage {
 
   subscription: Subscription;
-  deal: any;
+  deal: FirebaseObjectObservable<any>;
   dealObject: any;
   drivers = [];
 

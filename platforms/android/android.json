@@ -45,6 +45,14 @@
               "count": 1
             },
             {
+              "xml": "<feature name=\"InAppBrowser\"><param name=\"android-package\" value=\"org.apache.cordova.inappbrowser.InAppBrowser\" /></feature>",
+              "count": 1
+            },
+            {
+              "xml": "<feature name=\"Market\"><param name=\"android-package\" value=\"com.xmartlabs.cordova.market.Market\" /></feature>",
+              "count": 1
+            },
+            {
               "xml": "<feature name=\"SplashScreen\"><param name=\"android-package\" value=\"org.apache.cordova.splashscreen.SplashScreen\" /><param name=\"onload\" value=\"true\" /></feature>",
               "count": 1
             },
@@ -57,23 +65,15 @@
               "count": 1
             },
             {
+              "xml": "<feature name=\"SocialSharing\"><param name=\"android-package\" value=\"nl.xservices.plugins.SocialSharing\" /></feature>",
+              "count": 1
+            },
+            {
               "xml": "<feature name=\"Keyboard\"><param name=\"android-package\" value=\"io.ionic.keyboard.IonicKeyboard\" /><param name=\"onload\" value=\"true\" /></feature>",
               "count": 1
             },
             {
               "xml": "<feature name=\"OneSignalPush\"><param name=\"android-package\" value=\"com.plugin.gcm.OneSignalPush\" /></feature>",
-              "count": 1
-            },
-            {
-              "xml": "<feature name=\"Market\"><param name=\"android-package\" value=\"com.xmartlabs.cordova.market.Market\" /></feature>",
-              "count": 1
-            },
-            {
-              "xml": "<feature name=\"InAppBrowser\"><param name=\"android-package\" value=\"org.apache.cordova.inappbrowser.InAppBrowser\" /></feature>",
-              "count": 1
-            },
-            {
-              "xml": "<feature name=\"SocialSharing\"><param name=\"android-package\" value=\"nl.xservices.plugins.SocialSharing\" /></feature>",
               "count": 1
             }
           ]
@@ -149,6 +149,30 @@
               "count": 1
             }
           ],
+          "/*/application": [
+            {
+              "xml": "<receiver android:enabled=\"true\" android:name=\"nl.xservices.plugins.ShareChooserPendingIntent\"><intent-filter><action android:name=\"android.intent.action.SEND\" /></intent-filter></receiver>",
+              "count": 1
+            }
+          ],
+          "/manifest/application": [
+            {
+              "xml": "<provider android:authorities=\"${applicationId}.sharing.provider\" android:exported=\"false\" android:grantUriPermissions=\"true\" android:name=\"nl.xservices.plugins.FileProvider\"><meta-data android:name=\"android.support.FILE_PROVIDER_PATHS\" android:resource=\"@xml/sharing_paths\" /></provider>",
+              "count": 1
+            },
+            {
+              "xml": "<amazon:enable-feature android:name=\"com.amazon.device.messaging\" android:required=\"false\" xmlns:amazon=\"http://schemas.amazon.com/apk/res/android\" />",
+              "count": 1
+            },
+            {
+              "xml": "<service android:exported=\"false\" android:name=\"com.onesignal.ADMMessageHandler\" />",
+              "count": 1
+            },
+            {
+              "xml": "<receiver android:name=\"com.onesignal.ADMMessageHandler$Receiver\" android:permission=\"com.amazon.device.messaging.permission.SEND\"><intent-filter><action android:name=\"com.amazon.device.messaging.intent.REGISTRATION\" /><action android:name=\"com.amazon.device.messaging.intent.RECEIVE\" /><category android:name=\"com.pd.rider\" /></intent-filter></receiver>",
+              "count": 1
+            }
+          ],
           "/manifest": [
             {
               "xml": "<uses-permission android:name=\"com.amazon.device.messaging.permission.RECEIVE\" />",
@@ -160,18 +184,6 @@
             },
             {
               "xml": "<uses-permission android:name=\"com.pd.rider.permission.RECEIVE_ADM_MESSAGE\" />",
-              "count": 1
-            }
-          ],
-          "/manifest/application": [
-            {
-              "xml": "<provider android:authorities=\"${applicationId}.sharing.provider\" android:exported=\"false\" android:grantUriPermissions=\"true\" android:name=\"nl.xservices.plugins.FileProvider\"><meta-data android:name=\"android.support.FILE_PROVIDER_PATHS\" android:resource=\"@xml/sharing_paths\" /></provider>",
-              "count": 1
-            }
-          ],
-          "/*/application": [
-            {
-              "xml": "<receiver android:enabled=\"true\" android:name=\"nl.xservices.plugins.ShareChooserPendingIntent\"><intent-filter><action android:name=\"android.intent.action.SEND\" /></intent-filter></receiver>",
               "count": 1
             }
           ]
@@ -203,6 +215,16 @@
     "cordova-plugin-geolocation": {
       "PACKAGE_NAME": "com.pd.rider"
     },
+    "cordova-plugin-inappbrowser": {
+      "PACKAGE_NAME": "com.pd.rider"
+    },
+    "cordova-plugin-market": {
+      "PACKAGE_NAME": "com.pd.rider"
+    },
+    "cordova-plugin-request-location-accuracy": {
+      "PLAY_SERVICES_LOCATION_VERSION": "16.+",
+      "PACKAGE_NAME": "com.pd.rider"
+    },
     "cordova-plugin-splashscreen": {
       "PACKAGE_NAME": "com.pd.rider"
     },
@@ -212,27 +234,17 @@
     "cordova-plugin-whitelist": {
       "PACKAGE_NAME": "com.pd.rider"
     },
-    "ionic-plugin-keyboard": {
-      "PACKAGE_NAME": "com.pd.rider"
-    },
-    "onesignal-cordova-plugin": {
-      "PACKAGE_NAME": "com.pd.rider"
-    },
-    "cordova-plugin-request-location-accuracy": {
-      "PLAY_SERVICES_LOCATION_VERSION": "16.+",
-      "PACKAGE_NAME": "com.pd.rider"
-    },
-    "cordova-plugin-market": {
-      "PACKAGE_NAME": "com.pd.rider"
-    },
-    "cordova-plugin-inappbrowser": {
-      "PACKAGE_NAME": "com.pd.rider"
-    },
     "es6-promise-plugin": {
       "PACKAGE_NAME": "com.pd.rider"
     },
     "cordova-plugin-x-socialsharing": {
       "ANDROID_SUPPORT_V4_VERSION": "24.1.1+",
+      "PACKAGE_NAME": "com.pd.rider"
+    },
+    "ionic-plugin-keyboard": {
+      "PACKAGE_NAME": "com.pd.rider"
+    },
+    "onesignal-cordova-plugin": {
       "PACKAGE_NAME": "com.pd.rider"
     }
   },
@@ -269,6 +281,31 @@
       "runs": true
     },
     {
+      "id": "cordova-plugin-inappbrowser.inappbrowser",
+      "file": "plugins/cordova-plugin-inappbrowser/www/inappbrowser.js",
+      "pluginId": "cordova-plugin-inappbrowser",
+      "clobbers": [
+        "cordova.InAppBrowser.open",
+        "window.open"
+      ]
+    },
+    {
+      "id": "cordova-plugin-market.Market",
+      "file": "plugins/cordova-plugin-market/www/market.js",
+      "pluginId": "cordova-plugin-market",
+      "clobbers": [
+        "cordova.plugins.market"
+      ]
+    },
+    {
+      "id": "cordova-plugin-request-location-accuracy.RequestLocationAccuracy",
+      "file": "plugins/cordova-plugin-request-location-accuracy/www/android/RequestLocationAccuracy.js",
+      "pluginId": "cordova-plugin-request-location-accuracy",
+      "clobbers": [
+        "cordova.plugins.locationAccuracy"
+      ]
+    },
+    {
       "id": "cordova-plugin-splashscreen.SplashScreen",
       "file": "plugins/cordova-plugin-splashscreen/www/splashscreen.js",
       "pluginId": "cordova-plugin-splashscreen",
@@ -282,6 +319,20 @@
       "pluginId": "cordova-plugin-statusbar",
       "clobbers": [
         "window.StatusBar"
+      ]
+    },
+    {
+      "id": "es6-promise-plugin.Promise",
+      "file": "plugins/es6-promise-plugin/www/promise.js",
+      "pluginId": "es6-promise-plugin",
+      "runs": true
+    },
+    {
+      "id": "cordova-plugin-x-socialsharing.SocialSharing",
+      "file": "plugins/cordova-plugin-x-socialsharing/www/SocialSharing.js",
+      "pluginId": "cordova-plugin-x-socialsharing",
+      "clobbers": [
+        "window.plugins.socialsharing"
       ]
     },
     {
@@ -300,60 +351,21 @@
       "clobbers": [
         "OneSignal"
       ]
-    },
-    {
-      "id": "cordova-plugin-request-location-accuracy.RequestLocationAccuracy",
-      "file": "plugins/cordova-plugin-request-location-accuracy/www/android/RequestLocationAccuracy.js",
-      "pluginId": "cordova-plugin-request-location-accuracy",
-      "clobbers": [
-        "cordova.plugins.locationAccuracy"
-      ]
-    },
-    {
-      "id": "cordova-plugin-market.Market",
-      "file": "plugins/cordova-plugin-market/www/market.js",
-      "pluginId": "cordova-plugin-market",
-      "clobbers": [
-        "cordova.plugins.market"
-      ]
-    },
-    {
-      "id": "cordova-plugin-inappbrowser.inappbrowser",
-      "file": "plugins/cordova-plugin-inappbrowser/www/inappbrowser.js",
-      "pluginId": "cordova-plugin-inappbrowser",
-      "clobbers": [
-        "cordova.InAppBrowser.open",
-        "window.open"
-      ]
-    },
-    {
-      "id": "es6-promise-plugin.Promise",
-      "file": "plugins/es6-promise-plugin/www/promise.js",
-      "pluginId": "es6-promise-plugin",
-      "runs": true
-    },
-    {
-      "id": "cordova-plugin-x-socialsharing.SocialSharing",
-      "file": "plugins/cordova-plugin-x-socialsharing/www/SocialSharing.js",
-      "pluginId": "cordova-plugin-x-socialsharing",
-      "clobbers": [
-        "window.plugins.socialsharing"
-      ]
     }
   ],
   "plugin_metadata": {
     "cordova-plugin-device": "1.1.7",
     "cordova-plugin-facebook4": "4.2.1",
     "cordova-plugin-geolocation": "2.4.3",
+    "cordova-plugin-inappbrowser": "3.1.0",
+    "cordova-plugin-market": "1.2.0",
+    "cordova-plugin-request-location-accuracy": "2.3.0",
     "cordova-plugin-splashscreen": "4.1.0",
     "cordova-plugin-statusbar": "2.4.2",
     "cordova-plugin-whitelist": "1.3.3",
-    "ionic-plugin-keyboard": "2.2.1",
-    "onesignal-cordova-plugin": "2.5.0",
-    "cordova-plugin-request-location-accuracy": "2.3.0",
-    "cordova-plugin-market": "1.2.0",
-    "cordova-plugin-inappbrowser": "3.1.0",
     "es6-promise-plugin": "4.2.2",
-    "cordova-plugin-x-socialsharing": "5.6.3"
+    "cordova-plugin-x-socialsharing": "5.6.3",
+    "ionic-plugin-keyboard": "2.2.1",
+    "onesignal-cordova-plugin": "2.5.0"
   }
 }

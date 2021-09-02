@@ -4,15 +4,13 @@ $text-color: #000;
 $background-color: #fff;
 $driverProfilePictureSize: 120px;
 
-// primary: navigation, button
-// secondary: used as background for cars
 
 $colors: (
         primary: #E2A100,
         secondary: #FFC107,
         danger: #D65451,
         light: #FFF,
-        dark: #444,
+        dark: #000000,
         gray: #a2a2a2,
         white: #FFF,
         bg-color: #F7F9FB,
@@ -20,7 +18,8 @@ $colors: (
 );
 
 
-@import "ionic.theme.default";
 $ionicons-font-path: "../assets/fonts";
+@import "ionic.theme.default";
 @import "ionic.ionicons";
 @import "taximetro";
+@import "currant";

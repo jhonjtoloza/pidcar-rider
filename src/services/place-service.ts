@@ -6,6 +6,8 @@ import {HttpClient} from "@angular/common/http";
 
 @Injectable()
 export class PlaceService {
+  public city;
+
   private baseUrl: any;
   private apiKey: any;
 
@@ -55,26 +57,49 @@ export class PlaceService {
 
   /**
    * Convert geocoder address to place object
-   * @param address: Geocoder address result
+   * @param results: Geocoder address result
    * @returns {{location: {lat: any, lng: any}, vicinity: string}}
    */
-  formatAddress(address) {
-    console.log(address);
+  formatAddress(results) {
+    let address = results[0];
     let vicinity = address.formatted_address;
-
+    let res = vicinity.split(',').splice(0, 1);
     return {
       location: {
         lat: address.geometry.location.lat(),
         lng: address.geometry.location.lng()
       },
-      vicinity: vicinity
+      vicinity: `${res.join()} ${this.getBarrio(results)}`
     }
   }
 
 
   getCityName(results) {
-    const city = results[0].address_components.filter(ac => ~ac.types.indexOf('locality'))[0].long_name;
-    console.log(city);
+    console.log(results);
+    let search = ['locality', 'administrative_area_level_2'];
+    let object = results.find(el => {
+      return el.types.some((el) => search.includes(el))
+    });
+    let city = '';
+    if (object) {
+      city = object.address_components[0].long_name;
+    }
+    this.city = city;
     return (city);
+  }
+
+  getBarrio(results) {
+    let search = ['neighborhood', 'sublocality_level_1']
+    let object = results.find(el => {
+      return el.types.some((el) => search.includes(el))
+    });
+    let barrio = ''
+    if (object) {
+      barrio = object.address_components[0].long_name;
+      if (barrio.toLowerCase().indexOf('barrio') === -1) {
+        barrio = 'Barrio ' + barrio
+      }
+    }
+    return barrio;
   }
 }

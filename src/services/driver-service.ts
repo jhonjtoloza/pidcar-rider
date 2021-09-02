@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {AngularFireDatabase} from "angularfire2/database";
-import * as GeoFire from "geofire";
+import {GeoFire} from "geofire";
 import {BehaviorSubject} from "rxjs";
 import {TripService} from "./trip-service";
 import {PlaceService} from "./place-service";
@@ -24,7 +24,7 @@ export class DriverService {
   startTrack(vehiculo_id, lat, lng) {
     this.activeDrivers$ = new BehaviorSubject([]);
     let ref: any = this.db.list(`tracking/${vehiculo_id}`);
-    const geofire = new GeoFire.GeoFire(ref.$ref);
+    const geofire = new GeoFire(ref.$ref);
     const geoQuery = geofire.query({
       center: [lat, lng],
       radius: 2

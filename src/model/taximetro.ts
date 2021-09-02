@@ -13,4 +13,7 @@ export interface Taximetro {
   recargo_nocturno: number;
   recargo_puerta_puerta: number;
   precio_unidad: number;
+  isFestivo: boolean;
+  hora_inicio: string;
+  hora_fin: string
 }

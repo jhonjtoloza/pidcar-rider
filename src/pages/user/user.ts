@@ -30,7 +30,7 @@ export class UserPage {
   cvv: any;
   afiliado: any = {};
 
-  mensaje: any = 'quiero invitarte a pertenecer al club Puntos Dorados y PD Taxi, Gana puntos por tus compras y carreras, Gana puntos por ' +
+  mensaje: any = 'quiero invitarte a pertenecer al club Puntos Dorados y PidCar, Gana puntos por tus compras y carreras, Gana puntos por ' +
     'las compras de tus amigos, compra con dinero o con tus puntos en cientos de negocios cerca en tu ciudad y participa' +
     ' por premios.';
 
@@ -39,13 +39,13 @@ export class UserPage {
               public translate: TranslateService,
               private api: ApiService, private socialShare: SocialSharing) {
     let userx = this.authService.getUserData();
-    this.authService.getUser(userx.uid).take(1).subscribe(snapshot => {
+    this.authService.getUser(userx.uid).take(1).subscribe((snapshot: any) => {
       snapshot.uid = snapshot.$key;
       this.user = snapshot;
       this.user.isEmailVerified = firebase.auth().currentUser.emailVerified;
       console.log(this.user);
     });
-    authService.getCardSetting().take(1).subscribe(snapshot => {
+    authService.getCardSetting().take(1).subscribe((snapshot: any) => {
       this.number = snapshot.number;
       this.exp = snapshot.exp;
       this.cvv = snapshot.cvv;
@@ -147,7 +147,9 @@ export class UserPage {
 
 
   share() {
-    this.socialShare.share(this.mensaje + " " + this.authService.pdUSer.urlShare, 'Invitación a Puntos Dorados Club')
+    this.socialShare.share(this.mensaje + " Usa mi codigo al registrarte" +
+      this.authService.pdUSer.code +
+      ' Descarga la app: http://bit.ly/PidCar')
       .then(function (data) {
         console.log("Compartido ..." + data)
       })
